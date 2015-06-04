@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Ultra Air Hockey (Retro)" />
+		<Option makefile="C:/Users/Anthony/Saved_Games/ROMs/Sega/Engineering/Projects/Cpp/SGDK/makefile.gen" />
+		<Option makefile_is_custom="1" />
+		<Option execution_dir="C:/Users/Anthony/Saved_Games/ROMs/Sega/Engineering/Projects/Cpp/Ultra Air Hockey/" />
+		<Option pch_mode="2" />
+		<Option compiler="sgdk" />
+		<MakeCommands>
+			<Build command="$make -f $makefile" />
+			<CompileFile command="$make -f $makefile $file" />
+			<Clean command="$make -f $makefile clean" />
+			<DistClean command="$make -f $makefile distclean$target" />
+			<AskRebuildNeeded command="" />
+			<SilentBuild command="$make -f $makefile &gt; $(CMD_NULL)" />
+		</MakeCommands>
+		<Build>
+			<Target title="default">
+				<Option output="out/Ultra Air Hockey (Retro)" prefix_auto="1" extension_auto="1" />
+				<Option object_output="out/" />
+				<Option type="1" />
+				<Option compiler="sgdk" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+				<MakeCommands>
+					<Build command="$make -f $makefile" />
+					<CompileFile command="$make -f $makefile $file" />
+					<Clean command="$make -f $makefile $file" />
+					<DistClean command="$make -f $makefile distclean$target" />
+					<AskRebuildNeeded command="" />
+					<SilentBuild command="$make -f $makefile &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="inc/DrawBG.h" />
+		<Unit filename="inc/Menu.h" />
+		<Unit filename="inc/echo.h" />
+		<Unit filename="inc/fmv.h" />
+		<Unit filename="inc/game.h" />
+		<Unit filename="inc/main.h" />
+		<Unit filename="inc/puck.h" />
+		<Unit filename="inc/stick.h" />
+		<Unit filename="res/Echo/data/Musres.h" />
+		<Unit filename="res/Gfx/Planes.h" />
+		<Unit filename="res/Gfx/Sprites.h" />
+		<Unit filename="src/DrawBG.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/Menu.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/boot/rom_head.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/echo.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/fmv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/game.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/puck.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/stick.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<envvars set="sgdk" />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

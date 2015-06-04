@@ -1,0 +1,49 @@
+Features:
+Modes
+Powerups
+Music
+
+Powerups:
+
+1 Multi puck
+2 Multi stick
+3 Ball saver (SCRAPPED)
+4 Blockade	
+5 Slowmo	
+6 Kill player	
+7 Swap places	
+8 Fastmo	
+9 Invis	
+10 Bumpers	
+
+Options:
+
+Mode:		Normal/Flipper	(SCRAPPED)
+Difficulty:	Easy/Medium/Hard
+Powerups:	on/off
+Music:		on/off
+Sfx:		on/off
+Soundtest:	(Values)
+Screen size (editable via Data.ini ONLY)
+
+Modes:
+Ez/Medium/Hard (3 different goal lengths)
+
+Music:
+
+1/2. Title - hockey_fever.xm
+3. Options - goto8o-nes_mes2.mod
+
+4. Game (normal, x3) - PITTITLE.mod
+5. Game (normal, x2) - ice-hockey_94theme.mod
+6. Game (normal, x1) - organmaster.mod
+
+7. Multi puck powerup - wotw-intro101.mod
+8. Multi stick powerup - reflex-hurry_up!.mod
+9. Slowmo powerup - Slowmotion.mod
+10. Blockade powerup - exodus-castle_load.mod
+
+11. Invis powerdown - complexity.mod
+12. Bumpers powerdown - reflexity_music.mod (sub-song #3)
+13. Fasmo powerdown - Chipmunk.mod
+14. Credits - iceHockey2.mod

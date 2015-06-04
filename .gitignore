@@ -1,0 +1,8 @@
+out/rom.out
+*.o
+out/rom_head.bin
+res/Echo/data/music/Src/Orig Tracker files.7z
+res/Echo/Misc/Orig VGM Logs.7z
+res/Echo/Misc/Sega_CD.7z
+res/Echo/Misc/Ultra Air Hockey VGM OST.7z
+Ultra Air Hockey (Retro).layout
