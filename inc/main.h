@@ -136,7 +136,7 @@ static u32 const Songs_Len[]=
 //Options
 static u8 Opts[]=
 {
-    PTRUE,PTRUE,_FALSE,PTRUE,PTRUE
+    PTRUE,_FALSE,_FALSE,PTRUE,PTRUE
 };
 
 u8 isPaused;    //Global to determine if game is paused
@@ -246,5 +246,6 @@ OB Objs[Max_Objs];         //Array of objects
 
 //main.h protos:
 int main();
-void BtnStickMove(u16 joy, u16 changed, u16 state);
+void BtnStick(u16 joy, u16 changed, u16 state);
+void BtnStickMove(u8 numjoy, u16 value);
 void StickStats(u8 ID, u8 dx, u8 dy,s8 nx, s8 ny);

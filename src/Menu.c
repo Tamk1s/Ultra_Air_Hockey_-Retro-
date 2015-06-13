@@ -19,7 +19,7 @@ void MainMenu()
 
         echo_play_bgm(BGM_02);              //Play HockeyFever (Loop)
         InitMenu(1,0,0,4,PTRUE);            //Init menu to 3 items
-        JOY_setEventHandler( &BtnHMenu );   //Set appropriate button handler
+        JOY_setEventHandler(&BtnHMenu);   //Set appropriate button handler
 
         //While nothing is selected
         while (SItem==0)
@@ -173,14 +173,14 @@ void ChrselMenu()
     VDP_resetSprites();
 
     //Toggle amt of players as appropriately
-    if (SItem==1)
-    {
-        Opts[0]=_FALSE;
-    }
-    else
-    {
+    //if (SItem==1)
+    //{
+        //Opts[0]=_FALSE;
+    //}
+    //else
+    //{
         Opts[0]=PTRUE;
-    }
+    //}
 
     SPR_setPosition(&sprites[0],-128, -128);    //Set new position
     SPR_update(sprites, 1);                     //Update it

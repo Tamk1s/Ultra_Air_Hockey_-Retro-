@@ -7,45 +7,75 @@
 //MAIN GAME FUNCTION!
 int main ( void )
 {
-        // Mainloop
-        echo_init(Instruments);        // Load Instruments
-        echo_set_pcm_rate(4);          // Set Echo PCM Rate of 10250Hz
+    // Mainloop
+    echo_init(Instruments);        // Load Instruments
+    echo_set_pcm_rate(4);          // Set Echo PCM Rate of 10250Hz
+
+    while(1)
+    {
+        JOY_init();                     // Init the joypad
+        FMV();                          // Run EagleSoft Ltd FMV
+        Title();                        // Run Title FMV
+        MainMenu();                     // Run Main menu
+
+        //MAIN GAME LOOP
+        InitGame(PTRUE);
+
+        //Setup appropriate joy types for speediness
+        //if (DBUG==_FALSE)
+        //{
+            //JOY_setSupport(PORT_1, JOY_SUPPORT_3BTN);
+        //}
+        //else
+        //{
+            JOY_setSupport(PORT_1, JOY_SUPPORT_6BTN);
+        //}
+
+
+        //if (Opts[0]==_FALSE)
+        //{
+            //JOY_setSupport(PORT_2, JOY_SUPPORT_OFF);
+        //}
+        //else
+        //{
+            //if (DBUG==_FALSE)
+            //{
+                //JOY_setSupport(PORT_2, JOY_SUPPORT_3BTN);
+            //}
+            //else
+            //{
+                JOY_setSupport(PORT_2, JOY_SUPPORT_6BTN);
+            //}
+        //}
+        JOY_setEventHandler(BtnStick);    //Setup skip joy handler
 
         while(1)
         {
-            JOY_init();                     // Init the joypad
-            FMV();                          // Run EagleSoft Ltd FMV
-            Title();                        // Run Title FMV
-            MainMenu();                     // Run Main menu
+            BtnStickMove(JOY_1, JOY_readJoypad(JOY_1));
+            //if (Opts[0]==PTRUE)
+            //{
+                BtnStickMove(JOY_2, JOY_readJoypad(JOY_2));
+            //}
+            //else
+            //{
+                //@Goto CPU Stick function here
+            //}
 
-            //MAIN GAME LOOP
-            InitGame(PTRUE);
-            JOY_setEventHandler( &BtnStickMove);    //Setup skip joy handler
-            while(1)
-            {
-                if (DBUG==PTRUE)
-                {
-                    HUD();
-                }
-                VDP_waitVSync();                        //Sync
-            }
+            //if (DBUG==PTRUE)
+            //{
+            HUD();
+            //}
+            VDP_waitVSync();                        //Sync
         }
+    }
 }
 
-void BtnStickMove(u16 joy, u16 changed, u16 state)
+void BtnStick(u16 joy, u16 changed, u16 state)
 {
     u8 Set=0;
     u8 ID=0;
-
-    u8 dx=0;
-    u8 dy=0;
-    s8 nx=_FALSE;
-    s8 ny=_FALSE;
-    s16 x=0;
-    s16 y=0;
-
-    char val[2];
     u8 MoveIt=_FALSE;
+    //@Last slot speeds are not working? Also, on init, red puck blasts off into space
     u8 Speeds[2][3]=
     {
         {0,1,2,3},
@@ -78,69 +108,8 @@ void BtnStickMove(u16 joy, u16 changed, u16 state)
     }
 
     //If player is alive
-    if (Player[ID].alive==PTRUE)
-    {
-        //Up
-        if (state & BUTTON_UP)
-        {
-            dy=Player[ID].v;
-            ny=NTRUE;
-            MoveIt=PTRUE;
-        }
-        else if (changed & BUTTON_UP)
-        {
-            dy=0;
-            dy=_FALSE;
-
-            MoveIt=_FALSE;
-        }
-
-
-        //Down
-        if (state & BUTTON_DOWN)
-        {
-            dy=Player[ID].v;
-            ny=PTRUE;
-            MoveIt=PTRUE;
-        }
-        else if (changed & BUTTON_DOWN)
-        {
-            dy=0;
-            ny=_FALSE;
-            MoveIt=_FALSE;
-        }
-
-
-        //Left
-        if (state & BUTTON_LEFT)
-        {
-            dx=Player[ID].v;
-            nx=NTRUE;
-            MoveIt=PTRUE;
-        }
-        else if (changed & BUTTON_LEFT)
-        {
-            dx=0;
-            nx=FALSE;
-            MoveIt=_FALSE;
-        }
-
-
-        //Right
-        if (state & BUTTON_RIGHT)
-        {
-            dx=Player[ID].v;
-            nx=PTRUE;
-            MoveIt=PTRUE;
-        }
-        else if (changed & BUTTON_RIGHT)
-        {
-            dx=0;
-            nx=_FALSE;
-            MoveIt=_FALSE;
-        }
-
-
+    //if (Player[ID].alive==PTRUE)
+    //{
         //A Button
         if (state & BUTTON_A)
         {
@@ -154,11 +123,6 @@ void BtnStickMove(u16 joy, u16 changed, u16 state)
             //Retrieve and set the velocity for the player
             Player[ID].v=Speeds[Set][Player[ID].c];
         }
-        else if (changed & BUTTON_A)
-        {
-            //@NOP
-        }
-
 
         //B Button
         if ((state & BUTTON_B) && (Opts[2]==PTRUE))
@@ -168,120 +132,145 @@ void BtnStickMove(u16 joy, u16 changed, u16 state)
             {
                 Player[ID].aPwr=Player[ID].sPwr;    //Set active power to saved power
                 Player[ID].sPwr=0;                  //Delete saved powerup (it just got used)
+                HUD();
                 //@Powerups PTRUE, P_aPwr(char), Char 'Initialize powerup's effects for the player
             }
         }
-        else if (changed & BUTTON_B)
-        {
-            //@NOP
-        }
 
+        //if (DBUG==PTRUE)
+        //{
 
-        //C Button
-        if ((state & BUTTON_C) && (DBUG == PTRUE))
-        {
-            //Do some debug stuff (Here, cycle saved powerups for testing)
-            Player[ID].sPwr++;  //'Increment saved powerup, wrap between 0 & 11
-            if (Player[ID].sPwr>Pwr_Null)
+            //C Button
+            if (state & BUTTON_C)
             {
-                Player[ID].sPwr=Pwr_MPuck;
+                //Do some debug stuff (Here, cycle saved powerups for testing)
+                Player[ID].sPwr++;  //'Increment saved powerup, wrap between 0 & 11
+                if (Player[ID].sPwr>Pwr_Null)
+                {
+                    Player[ID].sPwr=Pwr_MPuck;
+                }
+                HUD(); //Refresh hud
             }
-            HUD(); //Refresh hud
-        }
-        else if (changed & BUTTON_C)
-        {
-            //@NOP
-        }
 
-
-        //X Button
-        if (state & BUTTON_X)
-        {
-            Announcer();
-        }
-        else if (changed & BUTTON_X)
-        {
-            //@NOP
-        }
-
-
-        //Y Button
-        if (state & BUTTON_Y)
-        {
-            //Increment player 1's score, wrap between 0 & 10
-            Player[0].Score++;
-            if (Player[0].Score>10)
+            //X Button
+            if (state & BUTTON_X)
             {
-                Player[0].Score=0;
+                Announcer();
             }
-            HUD();
-        }
-        else if (changed & BUTTON_Y)
-        {
-            //@NOP
-        }
 
-
-        //Z Button
-        if (state & BUTTON_Z)
-        {
-            //Increment player 2's score, wrap between 0 & 10
-            Player[1].Score++;
-            if (Player[1].Score>10)
+            //Y Button
+            if (state & BUTTON_Y)
             {
-                Player[1].Score=0;
+                //Increment player 1's score, wrap between 0 & 10
+                Player[0].Score++;
+                if (Player[0].Score>10)
+                {
+                    Player[0].Score=0;
+                }
+                HUD();
             }
-            HUD();
-        }
-        else if (changed & BUTTON_Z)
-        {
-            //@NOP
-        }
 
+            //Z Button
+            if (state & BUTTON_Z)
+            {
+                //Increment player 2's score, wrap between 0 & 10
+                Player[1].Score++;
+                if (Player[1].Score>10)
+                {
+                    Player[1].Score=0;
+                }
+                HUD();
+            }
+        //}
 
         //Start button, Do Pause screen
         if (state & BUTTON_START)
         {
             Paused();
             JOY_setEventHandler(&BtnStickMove); //Restore joypad interrupt
-
         }
-        else if (changed & BUTTON_START)
+    //}
+}
+
+void BtnStickMove(u8 numjoy, u16 value)
+{
+    u8 dx=0;
+    u8 dy=0;
+    s8 nx=_FALSE;
+    s8 ny=_FALSE;
+    s16 x=0;
+    s16 y=0;
+    u8 ID=0;
+
+    u8 MoveIt=_FALSE;
+
+    if (numjoy==JOY_1)
+    {
+        ID=0;
+    }
+    else
+    {
+        ID=1;
+    }
+
+    //If player is alive
+    if (Player[ID].alive==PTRUE)
+    {
+
+        //Up
+        if (value & BUTTON_UP)
         {
-            //@NOP
+            dy=Player[ID].v;
+            ny=NTRUE;
+            MoveIt=PTRUE;
+        }
+        else if (value & BUTTON_DOWN)
+        {
+            dy=Player[ID].v;
+            ny=PTRUE;
+            MoveIt=PTRUE;
         }
 
+        //Left
+        if (value & BUTTON_LEFT)
+        {
+            dx=Player[ID].v;
+            nx=NTRUE;
+            MoveIt=PTRUE;
+        }
+        else if (value & BUTTON_RIGHT)
+        {
+            dx=Player[ID].v;
+            nx=PTRUE;
+            MoveIt=PTRUE;
+        }
 
         if (MoveIt==PTRUE)
         {
             //Move the player
-            x=GameSprites[SOff_paddle+ID].x;
-            y=GameSprites[SOff_paddle+ID].y;
+            x=(&GameSprites[SOff_paddle+ID])->x;
+            y=(&GameSprites[SOff_paddle+ID])->y;
+            x-=0x80;
+            y-=0x80;
 
             switch(nx)
             {
-                case NTRUE:
-                    x-=dx;
-                    break;
-                case PTRUE:
-                    x+=dx;
-                    break;
-                default:
-                    //NOP
-                    break;
+            case NTRUE:
+                x-=dx;
+                break;
+            case PTRUE:
+                x+=dx;
+                break;
             }
 
             switch(ny)
             {
-                case NTRUE:
-                    y-=dy;
-                    break;
-                case PTRUE:
-                    y+=dy;
-                    break;
-                default:
-                    //NOP
-                    break;
+            case NTRUE:
+                y-=dy;
+                break;
+            case PTRUE:
+                y+=dy;
+                break;
             }
 
             SPR_setPosition(&GameSprites[SOff_paddle+ID],x,y);
@@ -294,7 +283,6 @@ void BtnStickMove(u16 joy, u16 changed, u16 state)
             //@GetBox 1,P_hand(char),#FALSE,#FALSE,#FALSE
             //@StickCollide 'Check stick colllisions
             SPR_update(GameSprites,SOff_Total);
-            MoveIt==_FALSE;
         }
     }
 }
@@ -364,28 +352,28 @@ void StickStats(u8 ID, u8 dx, u8 dy, s8 nx, s8 ny)
 
     switch(nx)
     {
-        case NTRUE:
-            strcpy(val[2],"-");
-            break;
-        case PTRUE:
-            strcpy(val[2],"+");
-            break;
-        default:
-            strcpy(val[2]," ");
-            break;
+    case NTRUE:
+        strcpy(val[2],"-");
+        break;
+    case PTRUE:
+        strcpy(val[2],"+");
+        break;
+    default:
+        strcpy(val[2]," ");
+        break;
     }
 
     switch(ny)
     {
-        case NTRUE:
-            strcpy(val[3],"-");
-            break;
-        case PTRUE:
-            strcpy(val[3],"+");
-            break;
-        default:
-            strcpy(val[3]," ");
-            break;
+    case NTRUE:
+        strcpy(val[3],"-");
+        break;
+    case PTRUE:
+        strcpy(val[3],"+");
+        break;
+    default:
+        strcpy(val[3]," ");
+        break;
     }
 
     strcpy(text,val[2]);

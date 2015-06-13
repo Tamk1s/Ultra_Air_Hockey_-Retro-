@@ -40,29 +40,38 @@ void InitGame(u8 act)
         VDP_resetSprites();
         VDP_setPalette(PWRPAL, SPR_Pwr.palette->data);      //Init palette PWRPAL
         VDP_setPalette(OBJPAL, SPR_ObjsN.palette->data);    //Init palette OBJPAL
-        VDP_setPaletteColor(PLNPAL+15,0xE);                 //Set last entry of PLNPAL to Red, for Red text
-        //@Due to palette schema, last entry of PWRPAL is blue.
+        VDP_setPaletteColor((16*PLNPAL)+15,0xE);            //Set last entry of PLNPAL to Red, for Red text
+        VDP_setPaletteColor((16*OBJPAL)+15,0xE00);          //                ~ OBJPAL to Blue, for Blue text
         //We will switch between PLNPAL and PWRPAl to draw red/blue text where needed
         SYS_enableInts();
 
-        //Set Player 1's spritesheet and sprite
-        //@Tile uploaded, sprites don't appear. fix
-        SPR_initSprite(&GameSprites[SOff_paddle], &SPR_ObjsN, 80, 96, TILE_ATTR(OBJPAL,TRUE,FALSE,FALSE));
-        SPR_setFrame(&GameSprites[SOff_paddle],ON_Red);
-        //@Doesn't this get initialized elsewhere?
-        Player[0].Side=_FALSE;   //Set his side to left
-        Player[0].alive=PTRUE;   //Set paddle to alive
-        Player[0].sPwr=Pwr_Null;
-        Player[0].aPwr=Pwr_Null;
-
-        //Set Player #2's spritesheet and sprite
-        //@Tile uploaded, sprites don't appear. fix
+        //Ditto for player #2
         SPR_initSprite(&GameSprites[SOff_paddle+1], &SPR_ObjsN, 240, 96, TILE_ATTR(OBJPAL,TRUE,FALSE,FALSE));
         SPR_setFrame(&GameSprites[SOff_paddle+1],ON_Blue);
-        Player[1].Side=PTRUE;   //Set his side to right
-        Player[1].alive=PTRUE;   //Set paddle to alive
-        Player[0].sPwr=Pwr_Null;
-        Player[0].aPwr=Pwr_Null;
+        Player[1].alive=PTRUE;
+        Player[1].ang=0;
+        Player[1].aPwr=Pwr_Null;
+        Player[1].c=0;
+        Player[1].Hitter=_FALSE;
+        Player[1].Score=0;
+        Player[1].sPwr=Pwr_Null;
+        Player[1].Side=PTRUE;
+        Player[1].v=0;
+
+        //Set Player 1's spritesheet and sprite
+        //@Tiles uploaded, sprites don't appear. fix
+        //@Does this init elsewhere?
+        SPR_initSprite(&GameSprites[SOff_paddle], &SPR_ObjsN, 80, 96, TILE_ATTR(OBJPAL,TRUE,FALSE,FALSE));
+        SPR_setFrame(&GameSprites[SOff_paddle],ON_Red);
+        Player[0].alive=PTRUE;      //Set paddle to alive
+        Player[0].ang=0;            //Angle
+        Player[0].aPwr=Pwr_Null;    //Null saved power
+        Player[0].c=0;              //0 speed set
+        Player[0].Hitter=_FALSE;    //Not the hitter
+        Player[0].Score=0;          //No score
+        Player[0].sPwr=Pwr_Null;    //Null active and saved powers
+        Player[0].Side=_FALSE;       //Set his side to left
+        Player[0].v=0;              //No Velocity
 
         //Create pucks
         for (i=0;i<=(Max_Pucks-1);i++)
@@ -72,38 +81,44 @@ void InitGame(u8 act)
             //Hide additional pucks
             if (i!=0)
             {
-                SPR_setPosition(&GameSprites[SOff_pucks+i],-128, -128);
+                SPR_setPosition(&GameSprites[SOff_pucks+i],0, 0);
+                SPR_setFrame(&GameSprites[SOff_pucks+i],ON_Null);
             }
         }
 
-        //Power HUD
-        /*
-        SPR_initSprite(&GameSprites[SOff_power], &SPR_Pwr, -128, -128, TILE_ATTR(PWRPAL,TRUE,FALSE,FALSE));
-        SPR_setFrame(&GameSprites[SOff_power],Pwr_Null);
-        SPR_initSprite(&GameSprites[SOff_spower], &SPR_Pwr, -128, -128, TILE_ATTR(PWRPAL,TRUE,FALSE,FALSE));
-        SPR_setFrame(&GameSprites[SOff_spower],Pwr_Null);
-        SPR_initSprite(&GameSprites[SOff_spower+1], &SPR_Pwr, -128, -128, TILE_ATTR(PWRPAL,TRUE,FALSE,FALSE));
-        SPR_setFrame(&GameSprites[SOff_spower+1],Pwr_Null);
-        */
-
         //Create Objs
+        /*
         for (i=0;i<=(Max_Objs-1);i++)
         {
             //if powerups enabled
             if ((i==0) && (Opts[2]==PTRUE))
             {
-                SPR_initSprite(&GameSprites[SOff_objects+i], &SPR_Pwr, -128, -128, TILE_ATTR(PWRPAL,TRUE,FALSE,FALSE));
-                SPR_setFrame(&GameSprites[SOff_objects+i],Pwr_Fast);
+                SPR_initSprite(&GameSprites[SOff_objects+i], &SPR_Pwr, 0, 0, TILE_ATTR(PWRPAL,TRUE,FALSE,FALSE));
+                SPR_setFrame(&GameSprites[SOff_objects+i],Pwr_Null);
                 Objs[i].Type=OT_Pwr;
             }
             else
             {
-                SPR_initSprite(&GameSprites[SOff_objects+i], &SPR_ObjsN, -128, -128, TILE_ATTR(OBJPAL,TRUE,FALSE,FALSE));
+                SPR_initSprite(&GameSprites[SOff_objects+i], &SPR_ObjsN, 0, 0, TILE_ATTR(OBJPAL,TRUE,FALSE,FALSE));
                 SPR_setFrame(&GameSprites[SOff_objects+i],ON_Null);
                 Objs[i].Type=OT_NULL;
             }
             Objs[i].Subtype=OST_NULL;
         }
+        */
+
+        //Power HUD
+        /*
+        if (Opts[2]==PTRUE)
+        {
+            SPR_initSprite(&GameSprites[SOff_power], &SPR_Pwr, 0, 0, TILE_ATTR(PWRPAL,TRUE,FALSE,FALSE));
+            SPR_setFrame(&GameSprites[SOff_power],Pwr_Null);
+            SPR_initSprite(&GameSprites[SOff_spower], &SPR_Pwr, 0, 0, TILE_ATTR(PWRPAL,TRUE,FALSE,FALSE));
+            SPR_setFrame(&GameSprites[SOff_spower],Pwr_Null);
+            SPR_initSprite(&GameSprites[SOff_spower+1], &SPR_Pwr, 0, 0, TILE_ATTR(PWRPAL,TRUE,FALSE,FALSE));
+            SPR_setFrame(&GameSprites[SOff_spower+1],Pwr_Null);
+        }
+        */
 
         //Update it all!
         SPR_update(GameSprites,SOff_Total);
@@ -239,8 +254,8 @@ void HUD()
     VDP_setTextPriority(PTRUE);
 
     //if DBUG on, show FPS and MEM
-    if (DBUG==PTRUE)
-    {
+    //if (DBUG==PTRUE)
+    //{
         //Display FPS
         x=6;
         y=26;
@@ -260,7 +275,7 @@ void HUD()
         VDP_drawText("MEM: ",1,y);
         VDP_drawText("      ",x,y);
         VDP_drawText(val,x,y);
-    }
+    //}
 
     //If powerups enabled
     if (Opts[2]==PTRUE)
@@ -329,6 +344,7 @@ void HUD()
     }
 
     //Print Player #1's score
+    //@Fix me
     uintToStr(Player[0].Score,val,1);
     VDP_setTextPalette(PLNPAL);              //Set text to red
     VDP_drawText("  ",x,y);
@@ -378,6 +394,7 @@ void HUD()
 //Routine to handle pausing the game!
 void Paused()
 {
+    /*
     isPaused=PTRUE;
 
     u16 i;   //Generic Coutner variable #1
@@ -431,11 +448,13 @@ void Paused()
         }
     }
     //@Resume old song
+    */
 }
 
 //Paused joy callback
 void BtnPaused(u16 joy, u16 changed, u16 state)
 {
+    /*
     u8 i;
 
     if (state & BUTTON_START)
@@ -457,4 +476,6 @@ void BtnPaused(u16 joy, u16 changed, u16 state)
             }
         }
     }
+    /*
+    */
 }
