@@ -1,0 +1,12 @@
+//Contains sprite-related def/functions
+//#include "../res/Gfx/Sprites.h"
+//#include <spr_eng.h>
+/*
+Box GetBox(*Sprite spr)
+{
+    Box box;
+    box.w=
+    box.h=
+
+}
+*/

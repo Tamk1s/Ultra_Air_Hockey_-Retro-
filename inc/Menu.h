@@ -1,13 +1,13 @@
 #include <Genesis.h>
 #include "../inc/main.h"
 #include "../inc/DrawBG.h"
+//#include <sprite_eng.h>
+#include "../res/Gfx/Sprites.h"
 #include <joy.h>
 #include <timer.h>
 #include <vdp.h>
 #include <vdp_pal.h>
 #include <string.h>
-#include "../res/Gfx/Sprites.h"
-#include <sprite_eng.h>
 
 //Global menu.c variables
 //Menu stuff

@@ -1,6 +1,5 @@
 //Holds EagleSoft Ltd and Title FMV sequences
 #include "../inc/fmv.h"
-
 //EagleSoft Ltd FMV Sequence
 void FMV()
 {

@@ -3,9 +3,9 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="Ultra Air Hockey (Retro)" />
-		<Option makefile="C:/Users/Anthony/Saved_Games/ROMs/Sega/Engineering/Projects/Cpp/SGDK/makefile.gen" />
+		<Option makefile="J:/Engineering/Projects/Cpp/SGDK/makefile.gen" />
 		<Option makefile_is_custom="1" />
-		<Option execution_dir="C:/Users/Anthony/Saved_Games/ROMs/Sega/Engineering/Projects/Cpp/Ultra Air Hockey/" />
+		<Option execution_dir="J:/Engineering/Projects/Cpp/Ultra_Air_Hockey_(Retro)" />
 		<Option pch_mode="2" />
 		<Option compiler="sgdk" />
 		<MakeCommands>
@@ -56,6 +56,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/Menu.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/Sprites.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/boot/rom_head.c">

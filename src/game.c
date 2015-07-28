@@ -46,7 +46,7 @@ void InitGame(u8 act)
         SYS_enableInts();
 
         //Ditto for player #2
-        SPR_initSprite(&GameSprites[SOff_paddle+1], &SPR_ObjsN, 240, 96, TILE_ATTR(OBJPAL,TRUE,FALSE,FALSE));
+        //SPR_initSprite(&GameSprites[SOff_paddle+1], &SPR_ObjsN, 240, 96, TILE_ATTR(OBJPAL,TRUE,FALSE,FALSE));
         SPR_setFrame(&GameSprites[SOff_paddle+1],ON_Blue);
         Player[1].alive=PTRUE;
         Player[1].ang=0;

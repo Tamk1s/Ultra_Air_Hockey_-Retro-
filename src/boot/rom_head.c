@@ -23,7 +23,7 @@ const struct
 } rom_header = {
     "SEGA MEGA DRIVE ",
     "(C)EAGLESOFT'15",
-    "ULTRA AIR HOCKEY V1.0 (MEGA DRIVE)                 ",
+    "ULTRA AIR HOCKEY V1.0 (MEGA DRIVE)           ",
     "ULTRA AIR HOCKEY V1.0 (GENESIS)              ",
     "GM 00000000-00",
     0x0000,

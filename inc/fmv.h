@@ -1,9 +1,9 @@
 #include <Genesis.h>
 #include <timer.h>
+//#include <sprite_eng.h>
+#include "../inc/main.h"
 #include "../res/Gfx/Planes.h"
 #include "../res/Gfx/Sprites.h"
-#include <sprite_eng.h>
-#include "../inc/main.h"
 #include <vdp_pal.h>
 #include <joy.h>
 

@@ -207,22 +207,7 @@ TYPE Vtr //Type for vectors
 END TYPE
 */
 
-//User Box datatype instead?
-/*
-TYPE Box //Type for sprite processing.
-//It//s a cache of most of the SpriteLibary//s SPRITE type variables
-    hand AS INTEGER //image handle
-    w AS INTEGER //Image width
-    h AS INTEGER //Image height
-    cx AS INTEGER //x coord (center)
-    cy AS INTEGER //y coord (center)
-    x1 AS INTEGER //x coord of top left corner
-    y1 AS INTEGER //y coord of top left corner
-    x2 AS INTEGER //x coord of bottom right corner
-    y2 AS INTEGER //y coord of bottom right corner
-    V AS Vtr //Resultant velocity
-END TYPE
-*/
+//BOX datatype moved to Sprites.h/.c
 
 #define Max_Pucks 3
 #define Max_Objs 8
