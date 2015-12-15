@@ -2,6 +2,8 @@
 #include "../inc/main.h"
 //@#include "../res/Gfx/Planes.h"
 #include "../inc/game.h"
+#include "../res/Gfx/Sprites.h"
+#include "SpriteManip.h"
 #include <joy.h>
 
 //MAIN GAME FUNCTION!
@@ -141,7 +143,7 @@ void BtnStick(u16 joy, u16 changed, u16 state)
         //{
 
             //C Button
-            if (state & BUTTON_C)
+            if ((state & BUTTON_C)&& (Opts[2]==PTRUE))
             {
                 //Do some debug stuff (Here, cycle saved powerups for testing)
                 Player[ID].sPwr++;  //'Increment saved powerup, wrap between 0 & 11
@@ -187,7 +189,7 @@ void BtnStick(u16 joy, u16 changed, u16 state)
         if (state & BUTTON_START)
         {
             Paused();
-            JOY_setEventHandler(&BtnStickMove); //Restore joypad interrupt
+            JOY_setEventHandler(BtnStickMove); //Restore joypad interrupt
         }
     //}
 }
@@ -281,7 +283,7 @@ void BtnStickMove(u8 numjoy, u16 value)
                 StickStats(ID,dx,dy,nx,ny);
             }
             //@GetBox 1,P_hand(char),#FALSE,#FALSE,#FALSE
-            //@StickCollide 'Check stick colllisions
+            StickCollide(ID);   //Check stick colllisions
             SPR_update(GameSprites,SOff_Total);
         }
     }
@@ -387,4 +389,153 @@ void StickStats(u8 ID, u8 dx, u8 dy, s8 nx, s8 ny)
     strclr(val[2]);
     strclr(val[3]);
     strclr(text);
+}
+
+/*Routine to check collision between sticks &
+  objects, pucks, centerline, and border
+  ID=player to process*/
+void StickCollide(u8 ID)
+{
+    u8 i;          //Generic counter variable #1
+    u8 Hit;        //Was there a collision?
+    u8 *Hit_Sfx=0; //Hit sfx pointer
+    u16 offset[2]; //Temp register for pixel calcs
+    _Box box[1];   //Boxes to compare against
+
+    //Process the player
+
+    //Change border collision sfx dependent on if Big or little stick
+    if (Player[ID].aPwr==Pwr_BStick)
+    {
+        Hit_Sfx=&SFX_30;
+    }
+    else
+    {
+        Hit_Sfx=&SFX_04;
+    }
+
+    //Get sprite vars for player being processed. Use as box[0]. box[1]=thing collided with
+    box[0]=GetBox(&GameSprites[SOff_paddle+ID]);
+
+    //Check board bounds
+
+	//Left border
+	offset[0]=SPR_Origin+2;
+    if (box[0].x1<=offset[0])
+    {
+        offset[1]=SPR_Origin+3;
+        offset[2]=box[0].y1;
+        offset[1]-=0x80;
+        offset[2]-=0x80;
+        SPR_setPosition(&GameSprites[SOff_paddle+ID], offset[1], offset[2]);    //Fix OOB Collision
+        box[0]=GetBox(&GameSprites[SOff_paddle+ID]);       //Update Box
+        echo_play_sfx(Hit_Sfx);
+    }
+
+    //Same idea for top, right, and bottom borders
+    //Top border
+    offset[0]=SPR_Origin+2;
+    if (box[0].y1<=offset[0])
+    {
+        offset[1]=box[0].x1;
+        offset[2]=SPR_Origin+3;
+        offset[1]-=0x80;
+        offset[2]-=0x80;
+        SPR_setPosition(&GameSprites[SOff_paddle+ID], offset[1], offset[2]);
+        box[0]=GetBox(&GameSprites[SOff_paddle+ID]);
+        echo_play_sfx(Hit_Sfx);
+    }
+
+	//Right border
+	offset[0]=(SPR_Origin+VDP_Width)-2;
+    if (box[0].x2>=offset[0])
+    {
+        offset[1]=(SPR_Origin+VDP_Width)-(box[0].w+2);
+        offset[2]=box[0].y1;
+        offset[1]-=0x80;
+        offset[2]-=0x80;
+        SPR_setPosition(&GameSprites[SOff_paddle+ID], offset[1], offset[2]);
+        box[0]=GetBox(&GameSprites[SOff_paddle+ID]);
+        echo_play_sfx(Hit_Sfx);
+    }
+
+	//Bottom border
+	offset[0]=(SPR_Origin+VDP_Height)-2;
+    if (box[0].y2>=offset[0])
+    {
+        offset[1]=box[0].x1;
+        offset[2]=(SPR_Origin+VDP_Height)-(box[0].h+2);
+        offset[1]-=0x80;
+        offset[2]-=0x80;
+        SPR_setPosition(&GameSprites[SOff_paddle+ID], offset[1], offset[2]);
+        box[0]=GetBox(&GameSprites[SOff_paddle+ID]);
+        echo_play_sfx(Hit_Sfx);
+    }
+
+    if (DBUG==_FALSE)
+    {
+        //Check center line bounds
+        if (Player[ID].Side==_FALSE)
+        {
+            //if on left side, prevent player from going onto right side
+            offset[0]=SPR_Origin+VDP_HWidth;
+            if (box[0].x2>=offset[0])
+            {
+                offset[1]=(SPR_Origin+VDP_HWidth)-(box[0].w+1);
+                offset[2]=box[0].y1;
+                offset[1]-=0x80;
+                offset[2]-=0x80;
+                SPR_setPosition(&GameSprites[SOff_paddle+ID], offset[1],offset[2]);
+                box[0]=GetBox(&GameSprites[SOff_paddle+ID]); //Update box
+            }
+        }
+        else
+        {
+            //if on right side, prevent player from going onto left side
+            offset[0]=SPR_Origin+VDP_HWidth;
+            if (box[0].x1<=offset[0])
+            {
+                offset[1]=SPR_Origin+VDP_HWidth+1;
+                offset[2]=box[0].y1;
+                offset[1]-=0x80;
+                offset[2]-=0x80;
+                SPR_setPosition(&GameSprites[SOff_paddle+ID], offset[1],offset[2]);
+                box[0]=GetBox(&GameSprites[SOff_paddle+ID]); //Update box
+            }
+        }
+    }
+
+    /*
+    '@Disabled until get general collision detection working!
+    if #PTRUE=#FALSE then
+    'Check for collisions
+    'TRAPCPU
+    GetBox 1, P_hand(P), #PTRUE, P_angle(P), P_v(P)
+    'TRAPCPU
+    Hit=GSpriteCollide(#PTRUE,Box_hand(1),#FALSE,#FALSE,#FALSE)
+    IF hit=#PTRUE then
+
+        'Check object collisions (bumpers and wall only)
+        FOR Ctr1 = 1 to #N_OBJS
+            'i_f (SPRITECOLLIDEWITH(Box_hand(1)) = Objs(Ctr1).hand) AND (Objs(Ctr1).Type = 1 OR Objs(Ctr1).Type = 2) then
+                GetBox 2, OB_hand(Ctr1), #PTRUE, #FALSE, #FALSE 'Get sprite vars for collided object
+                'Do the collision, with appropriate sound effect
+                'i_f OB_Type(Ctr1)= 1 then StdCol Pt(), 0, #FALSE, 5 else StdCol Pt(), 0, #FALSE, 4
+            'endi_f
+        NEXT Ctr1
+
+        'Check primary puck collision
+        'This code enables powerup collection
+        if Opts(3)=#PTRUE then
+            'i_f SPRITECOLLIDEWITH(Box_hand(1)) = Pucks&(1) then
+                P_Hitter(P) = #PTRUE 'Set player as hitter
+                'Make other NOT hitter
+                if P = 1 then P_Hitter(2)=#FALSE else P_Hitter(1)=#FALSE
+            'endi_f
+        ENDIF
+    ENDIF
+    endif
+
+ next P
+ */
 }

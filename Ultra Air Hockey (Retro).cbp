@@ -3,9 +3,9 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="Ultra Air Hockey (Retro)" />
-		<Option makefile="J:/Engineering/Projects/Cpp/SGDK/makefile.gen" />
+		<Option makefile="G:/Engineering/Projects/Cpp/SGDK/makefile.gen" />
 		<Option makefile_is_custom="1" />
-		<Option execution_dir="J:/Engineering/Projects/Cpp/Ultra_Air_Hockey_(Retro)" />
+		<Option execution_dir="G:/Engineering/Projects/Cpp/Ultra_Air_Hockey_(Retro)" />
 		<Option pch_mode="2" />
 		<Option compiler="sgdk" />
 		<MakeCommands>
@@ -13,7 +13,7 @@
 			<CompileFile command="$make -f $makefile $file" />
 			<Clean command="$make -f $makefile clean" />
 			<DistClean command="$make -f $makefile distclean$target" />
-			<AskRebuildNeeded command="" />
+			<AskRebuildNeeded command="$make -q -f $makefile clean" />
 			<SilentBuild command="$make -f $makefile &gt; $(CMD_NULL)" />
 		</MakeCommands>
 		<Build>
@@ -31,9 +31,9 @@
 				<MakeCommands>
 					<Build command="$make -f $makefile" />
 					<CompileFile command="$make -f $makefile $file" />
-					<Clean command="$make -f $makefile $file" />
+					<Clean command="$make -f $makefile clean" />
 					<DistClean command="$make -f $makefile distclean$target" />
-					<AskRebuildNeeded command="" />
+					<AskRebuildNeeded command="$make -q -f $makefile clean" />
 					<SilentBuild command="$make -f $makefile &gt; $(CMD_NULL)" />
 				</MakeCommands>
 			</Target>
@@ -43,12 +43,11 @@
 		</Compiler>
 		<Unit filename="inc/DrawBG.h" />
 		<Unit filename="inc/Menu.h" />
+		<Unit filename="inc/SpriteManip.h" />
 		<Unit filename="inc/echo.h" />
 		<Unit filename="inc/fmv.h" />
 		<Unit filename="inc/game.h" />
 		<Unit filename="inc/main.h" />
-		<Unit filename="inc/puck.h" />
-		<Unit filename="inc/stick.h" />
 		<Unit filename="res/Echo/data/Musres.h" />
 		<Unit filename="res/Gfx/Planes.h" />
 		<Unit filename="res/Gfx/Sprites.h" />
@@ -58,7 +57,7 @@
 		<Unit filename="src/Menu.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/Sprites.c">
+		<Unit filename="src/SpriteManip.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/boot/rom_head.c">
@@ -76,16 +75,20 @@
 		<Unit filename="src/main.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/puck.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/stick.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Extensions>
 			<code_completion />
 			<envvars set="sgdk" />
 			<lib_finder disable_auto="1" />
+			<debugger />
+			<DoxyBlocks>
+				<comment_style block="0" line="0" />
+				<doxyfile_project />
+				<doxyfile_build />
+				<doxyfile_warnings />
+				<doxyfile_output />
+				<doxyfile_dot />
+				<general />
+			</DoxyBlocks>
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

@@ -1,6 +1,5 @@
 #include "../inc/game.h"
 #include "../inc/main.h"
-
 //Contain Game related code
 
 //Routine initz the game match
@@ -45,8 +44,8 @@ void InitGame(u8 act)
         //We will switch between PLNPAL and PWRPAl to draw red/blue text where needed
         SYS_enableInts();
 
-        //Ditto for player #2
-        //SPR_initSprite(&GameSprites[SOff_paddle+1], &SPR_ObjsN, 240, 96, TILE_ATTR(OBJPAL,TRUE,FALSE,FALSE));
+        //Ditto for player no. 2
+        SPR_initSprite(&GameSprites[SOff_paddle+1], &SPR_ObjsN, 240, 96, TILE_ATTR(OBJPAL,TRUE,FALSE,FALSE));
         SPR_setFrame(&GameSprites[SOff_paddle+1],ON_Blue);
         Player[1].alive=PTRUE;
         Player[1].ang=0;
@@ -108,7 +107,6 @@ void InitGame(u8 act)
         */
 
         //Power HUD
-        /*
         if (Opts[2]==PTRUE)
         {
             SPR_initSprite(&GameSprites[SOff_power], &SPR_Pwr, 0, 0, TILE_ATTR(PWRPAL,TRUE,FALSE,FALSE));
@@ -118,7 +116,6 @@ void InitGame(u8 act)
             SPR_initSprite(&GameSprites[SOff_spower+1], &SPR_Pwr, 0, 0, TILE_ATTR(PWRPAL,TRUE,FALSE,FALSE));
             SPR_setFrame(&GameSprites[SOff_spower+1],Pwr_Null);
         }
-        */
 
         //Update it all!
         SPR_update(GameSprites,SOff_Total);
@@ -127,7 +124,7 @@ void InitGame(u8 act)
     }
     else
     {
-
+        // !@Do de-init code here
     }
 }
 
@@ -301,8 +298,8 @@ void HUD()
         }
 
         //Set saved powerup sprites
-        SPR_setFrame(&GameSprites[SOff_spower],Player[0].aPwr);
-        SPR_setFrame(&GameSprites[SOff_spower+1],Player[1].aPwr);
+        SPR_setFrame(&GameSprites[SOff_spower],Player[0].sPwr);
+        SPR_setFrame(&GameSprites[SOff_spower+1],Player[1].sPwr);
     }
 
     //Display player 1's active and saved powerups on their approriate/current sides
@@ -348,7 +345,7 @@ void HUD()
     uintToStr(Player[0].Score,val,1);
     VDP_setTextPalette(PLNPAL);              //Set text to red
     VDP_drawText("  ",x,y);
-    VDP_drawText(val,x,y);              //Draw it
+    VDP_drawText(val,x,y);                  //Draw it
 
     //Block similar to previous, but if/else sections swapped, indices changed, and using blue text
     if (Player[1].Side==PTRUE)
@@ -394,7 +391,6 @@ void HUD()
 //Routine to handle pausing the game!
 void Paused()
 {
-    /*
     isPaused=PTRUE;
 
     u16 i;   //Generic Coutner variable #1
@@ -409,7 +405,6 @@ void Paused()
         0x0000,0x0000,0x0000,0x0000,
     };
     u16 ind=(16*MISCPAL)+15;
-    u16 start;
     u16 end;
 
 
@@ -425,7 +420,7 @@ void Paused()
     //Draw pause text
     //            1234567890123456789012345678901234567
     VDP_drawText("+-----------------------------------+",x,y);y++;
-    VDP_drawText("|#===# #===# #   # #==== #==== ====\|",x,y);y++;
+    VDP_drawText("|#===# #===# #   # #==== #==== ====\\|",x,y);y++;
     VDP_drawText("|#   # #   # #   # #     #     #   #|",x,y);y++;
     VDP_drawText("|#===+ #===# #   # #===# #==== #   #|",x,y);y++;
     VDP_drawText("|#     #   # #   #     # #     #   #|",x,y);y++;
@@ -433,31 +428,26 @@ void Paused()
     VDP_drawText("+--------Press START Button---------+",x,y);y++;
 
     //@Everything below crashes. Why?
-    //JOY_setEventHandler(&BtnPaused);
+    JOY_setEventHandler(BtnPaused);
     while (isPaused==PTRUE)
     {
 
         for (i=1;i<=7;i++)
         {
-            start=ind;
-            end=(16*MISCPAL)+i;
-            VDP_fade(ind,ind,start,end,1000,PTRUE);    //Fade up to color
-            end=(16*MISCPAL);
-            VDP_fade(ind,ind,start,end,1000,PTRUE);    //Fade down to color
-            VDP_waitVSync();                            //Sync
+            VDP_setPaletteColor(ind,pal[i]);
+            waitMs(1000);
+            VDP_waitVSync();
         }
     }
     //@Resume old song
-    */
 }
 
 //Paused joy callback
 void BtnPaused(u16 joy, u16 changed, u16 state)
 {
-    /*
     u8 i;
 
-    if (state & BUTTON_START)
+    if (state & BUTTON_A)
     {
         isPaused=_FALSE;
     }
@@ -467,7 +457,7 @@ void BtnPaused(u16 joy, u16 changed, u16 state)
     {
         SPR_setPosition(&GameSprites[SOff_pucks],148, 100);
 
-        //@NEW to retro version!!
+        //@NEW to retro version! Place all multiple pucks in a line
         if ((Player[0].aPwr==Pwr_MPuck) || (Player[1].aPwr==Pwr_MPuck))
         {
             for (i=1;i<=(Max_Pucks-1);i++)
@@ -476,6 +466,4 @@ void BtnPaused(u16 joy, u16 changed, u16 state)
             }
         }
     }
-    /*
-    */
 }
