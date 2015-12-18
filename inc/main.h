@@ -1,7 +1,7 @@
 //Contains Echo variables and global variable stuffs
 #include <Genesis.h>
 #include "echo.h"
-//#include <maths.h>
+#include <maths.h>
 #include "../res/Echo/data/Musres.h"
 #include <string.h>
 #include <vdp.h>
@@ -131,12 +131,12 @@ static u32 const Songs_Len[]=
 #define NTRUE -1    //Negative True
 #define PTRUE 1     //Positive True
 #define _FALSE 0    //False
-#define DBUG 1      //Debug flag
+#define DBUG 0      //Debug flag
 
 //Options
 static u8 Opts[]=
 {
-    PTRUE,PTRUE,_FALSE,PTRUE,PTRUE
+    PTRUE,_FALSE,_FALSE,PTRUE,PTRUE
 };
 
 u8 isPaused;    //Global to determine if game is paused
@@ -175,7 +175,7 @@ typedef struct
     u8 Score;               //Player's score
     u16 v;                  //resultant Velocity
     u8 c;                   //Counter for velocity multiplier (0-4)
-    u8 ang;                 //@Angle to move stick
+    Vect2D_s16 ang;                 //@Angle to move stick
     u8 Side;                //Side of table for player. (_FALSE=Left, PTRUE=Right). Used for Swap place powerup/Center line division
 } Plyr;
 
@@ -187,13 +187,13 @@ typedef struct
     u8 Subtype;     //Sub type, for powerups. Powerups #1-10. #3 Ball Saver is deleted
 } OB;
 
-/*
 typedef struct
 {
-    Sprite sprite;
     Vect2D_s16 v;
+    u8 active;
 } Puck;
-*/
+
+Vect2D_s16 V2D_s16_Zero;
 
 //Object types and subtypes
 
@@ -238,7 +238,7 @@ END TYPE
 Sprite GameSprites[SOff_Total];
 Plyr Player[1];     //Players
 OB Objs[Max_Objs];  //Array of objects
-//Puck Pux[Max_Pucks];//Pucks
+Puck Pux[Max_Pucks];//Pucks
 //u8 ResetP;        //Flag to reset powerups's effects
 
 //Game-specific Echo stuff
@@ -251,3 +251,6 @@ void BtnStick(u16 joy, u16 changed, u16 state);
 void BtnStickMove(u8 numjoy, u16 value);
 void StickStats(u8 ID, u8 dx, u8 dy,s8 nx, s8 ny);
 void StickCollide(u8 ID);
+void PuckMove(u8 act, Puck pux, Vect2D_s16 Ang);
+void PuckCollide();
+void GoalSink();

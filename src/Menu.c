@@ -175,14 +175,14 @@ void ChrselMenu()
     VDP_resetSprites();
 
     //@Toggle amt of players as appropriately
-    //if (SItem==1)
-    //{
-        //Opts[0]=_FALSE;
-    //}
-    //else
-    //{
+    if (SItem==1)
+    {
+        Opts[0]=_FALSE;
+    }
+    else
+    {
         Opts[0]=PTRUE;
-    //}
+    }
 
     SPR_setPosition(&sprites[0],-128, -128);    //@Kill sprite
     SPR_update(sprites, 1);                     //Update it
@@ -459,7 +459,7 @@ void BtnOptions(u16 joy, u16 changed, u16 state)
             //Draw difficulty text and selected difficulty
             VDP_drawText("Difficulty:",6,11);
             VDP_drawText("      ",20,11);
-            switch (Opts[1])
+            switch(Opts[1])
             {
                 case 0:
                     VDP_drawText("Easy",20,11);

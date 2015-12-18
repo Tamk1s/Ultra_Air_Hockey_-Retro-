@@ -14,6 +14,7 @@ void InitGame(u8 act)
     //Init game
     if (act==PTRUE)
     {
+        //Opts[1]=2;      // !@
         DrawBG(0);      //Cls
         BG=14+Opts[1];  //Get appropriate BG ID
         DrawBG(BG);     //Draw it
@@ -48,7 +49,8 @@ void InitGame(u8 act)
         SPR_initSprite(&GameSprites[SOff_paddle+1], &SPR_ObjsN, 240, 96, TILE_ATTR(OBJPAL,TRUE,FALSE,FALSE));
         SPR_setFrame(&GameSprites[SOff_paddle+1],ON_Blue);
         Player[1].alive=PTRUE;
-        Player[1].ang=0;
+        Player[1].ang.x=0;
+        Player[1].ang.y=0;
         Player[1].aPwr=Pwr_Null;
         Player[1].c=0;
         Player[1].Hitter=_FALSE;
@@ -63,7 +65,8 @@ void InitGame(u8 act)
         SPR_initSprite(&GameSprites[SOff_paddle], &SPR_ObjsN, 80, 96, TILE_ATTR(OBJPAL,TRUE,FALSE,FALSE));
         SPR_setFrame(&GameSprites[SOff_paddle],ON_Red);
         Player[0].alive=PTRUE;      //Set paddle to alive
-        Player[0].ang=0;            //Angle
+        Player[0].ang.x=0;
+        Player[0].ang.y=0;
         Player[0].aPwr=Pwr_Null;    //Null saved power
         Player[0].c=0;              //0 speed set
         Player[0].Hitter=_FALSE;    //Not the hitter
@@ -77,11 +80,18 @@ void InitGame(u8 act)
         {
             SPR_initSprite(&GameSprites[SOff_pucks+i], &SPR_Pwr, 148, 100, TILE_ATTR(PWRPAL,TRUE,FALSE,FALSE));
             SPR_setFrame(&GameSprites[SOff_pucks+i],SPR_Puck);
+            Pux[i].v.x=0;
+            Pux[i].v.y=0;
             //Hide additional pucks
             if (i!=0)
             {
-                SPR_setPosition(&GameSprites[SOff_pucks+i],0, 0);
+                Pux[i].active=_FALSE;
+                SPR_setPosition(&GameSprites[SOff_pucks+i],-64, -64);
                 SPR_setFrame(&GameSprites[SOff_pucks+i],ON_Null);
+            }
+            else
+            {
+                Pux[i].active=PTRUE;
             }
         }
 
@@ -251,8 +261,8 @@ void HUD()
     VDP_setTextPriority(PTRUE);
 
     //if DBUG on, show FPS and MEM
-    //if (DBUG==PTRUE)
-    //{
+    if (DBUG==PTRUE)
+    {
         //Display FPS
         x=6;
         y=26;
@@ -272,7 +282,7 @@ void HUD()
         VDP_drawText("MEM: ",1,y);
         VDP_drawText("      ",x,y);
         VDP_drawText(val,x,y);
-    //}
+    }
 
     //If powerups enabled
     if (Opts[2]==PTRUE)

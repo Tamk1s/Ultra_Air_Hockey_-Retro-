@@ -33,11 +33,12 @@ int main ( void )
             JOY_setSupport(PORT_1, JOY_SUPPORT_6BTN);
         //}
 
+        Opts[0]=_FALSE;          // !@ Remove me after debugging
+        if (Opts[0]==_FALSE)
+        {
+            JOY_setSupport(PORT_2, JOY_SUPPORT_OFF);
 
-        //if (Opts[0]==_FALSE)
-        //{
-            //JOY_setSupport(PORT_2, JOY_SUPPORT_OFF);
-        //}
+        }
         //else
         //{
             //if (DBUG==_FALSE)
@@ -46,17 +47,20 @@ int main ( void )
             //}
             //else
             //{
-                JOY_setSupport(PORT_2, JOY_SUPPORT_6BTN);
+              //  JOY_setSupport(PORT_2, JOY_SUPPORT_6BTN);
             //}
         //}
         JOY_setEventHandler(BtnStick);    //Setup skip joy handler
 
-        while(1)
+        while((Player[0].Score<10)&&(Player[1].Score<10))
         {
+            PuckMove(2,Pux[0],V2D_s16_Zero);    //Display all pucks
+            PuckMove(0,Pux[0],V2D_s16_Zero);    //Move all pucks
             BtnStickMove(JOY_1, JOY_readJoypad(JOY_1));
             //if (Opts[0]==PTRUE)
             //{
-                BtnStickMove(JOY_2, JOY_readJoypad(JOY_2));
+                // !@ This does not work. Refactor into BtnStick?
+                //BtnStickMove(JOY_2, JOY_readJoypad(JOY_2));
             //}
             //else
             //{
@@ -65,7 +69,7 @@ int main ( void )
 
             //if (DBUG==PTRUE)
             //{
-            HUD();
+                HUD();
             //}
             VDP_waitVSync();                        //Sync
         }
@@ -189,7 +193,7 @@ void BtnStick(u16 joy, u16 changed, u16 state)
         if (state & BUTTON_START)
         {
             Paused();
-            JOY_setEventHandler(BtnStickMove); //Restore joypad interrupt
+            JOY_setEventHandler(BtnStick); //Restore joypad interrupt
         }
     //}
 }
@@ -216,8 +220,8 @@ void BtnStickMove(u8 numjoy, u16 value)
     }
 
     //If player is alive
-    if (Player[ID].alive==PTRUE)
-    {
+    //if (Player[ID].alive==PTRUE)
+    //{
 
         //Up
         if (value & BUTTON_UP)
@@ -252,15 +256,17 @@ void BtnStickMove(u8 numjoy, u16 value)
             //Move the player
             x=(&GameSprites[SOff_paddle+ID])->x;
             y=(&GameSprites[SOff_paddle+ID])->y;
-            x-=0x80;
-            y-=0x80;
+            x-=SPR_Origin;
+            y-=SPR_Origin;
 
             switch(nx)
             {
             case NTRUE:
+                Player[ID].ang.x=0-dx;
                 x-=dx;
                 break;
             case PTRUE:
+                Player[ID].ang.x=dx;
                 x+=dx;
                 break;
             }
@@ -268,9 +274,11 @@ void BtnStickMove(u8 numjoy, u16 value)
             switch(ny)
             {
             case NTRUE:
+                Player[ID].ang.y=0-dy;
                 y-=dy;
                 break;
             case PTRUE:
+                Player[ID].ang.y=dy;
                 y+=dy;
                 break;
             }
@@ -286,7 +294,7 @@ void BtnStickMove(u8 numjoy, u16 value)
             StickCollide(ID);   //Check stick colllisions
             SPR_update(GameSprites,SOff_Total);
         }
-    }
+    //}
 }
 
 void StickStats(u8 ID, u8 dx, u8 dy, s8 nx, s8 ny)
@@ -333,7 +341,7 @@ void StickStats(u8 ID, u8 dx, u8 dy, s8 nx, s8 ny)
     VDP_clearTextLine(6);
     uintToStr(Player[ID].v,val[0],1);
     uintToStr(Player[ID].c,val[1],1);
-    uintToStr(Player[ID].ang,val[2],1);
+    //uintToStr(Player[ID].ang,val[2],1);
     strcpy(text, val[0]);
     strcat(text, ",");
     strcat(text, val[1]);
@@ -425,8 +433,8 @@ void StickCollide(u8 ID)
     {
         offset[1]=SPR_Origin+3;
         offset[2]=box[0].y1;
-        offset[1]-=0x80;
-        offset[2]-=0x80;
+        offset[1]-=SPR_Origin;
+        offset[2]-=SPR_Origin;
         SPR_setPosition(&GameSprites[SOff_paddle+ID], offset[1], offset[2]);    //Fix OOB Collision
         box[0]=GetBox(&GameSprites[SOff_paddle+ID]);       //Update Box
         echo_play_sfx(Hit_Sfx);
@@ -439,8 +447,8 @@ void StickCollide(u8 ID)
     {
         offset[1]=box[0].x1;
         offset[2]=SPR_Origin+3;
-        offset[1]-=0x80;
-        offset[2]-=0x80;
+        offset[1]-=SPR_Origin;
+        offset[2]-=SPR_Origin;
         SPR_setPosition(&GameSprites[SOff_paddle+ID], offset[1], offset[2]);
         box[0]=GetBox(&GameSprites[SOff_paddle+ID]);
         echo_play_sfx(Hit_Sfx);
@@ -452,8 +460,8 @@ void StickCollide(u8 ID)
     {
         offset[1]=(SPR_Origin+VDP_Width)-(box[0].w+2);
         offset[2]=box[0].y1;
-        offset[1]-=0x80;
-        offset[2]-=0x80;
+        offset[1]-=SPR_Origin;
+        offset[2]-=SPR_Origin;
         SPR_setPosition(&GameSprites[SOff_paddle+ID], offset[1], offset[2]);
         box[0]=GetBox(&GameSprites[SOff_paddle+ID]);
         echo_play_sfx(Hit_Sfx);
@@ -465,8 +473,8 @@ void StickCollide(u8 ID)
     {
         offset[1]=box[0].x1;
         offset[2]=(SPR_Origin+VDP_Height)-(box[0].h+2);
-        offset[1]-=0x80;
-        offset[2]-=0x80;
+        offset[1]-=SPR_Origin;
+        offset[2]-=SPR_Origin;
         SPR_setPosition(&GameSprites[SOff_paddle+ID], offset[1], offset[2]);
         box[0]=GetBox(&GameSprites[SOff_paddle+ID]);
         echo_play_sfx(Hit_Sfx);
@@ -483,8 +491,8 @@ void StickCollide(u8 ID)
             {
                 offset[1]=(SPR_Origin+VDP_HWidth)-(box[0].w+1);
                 offset[2]=box[0].y1;
-                offset[1]-=0x80;
-                offset[2]-=0x80;
+                offset[1]-=SPR_Origin;
+                offset[2]-=SPR_Origin;
                 SPR_setPosition(&GameSprites[SOff_paddle+ID], offset[1],offset[2]);
                 box[0]=GetBox(&GameSprites[SOff_paddle+ID]); //Update box
             }
@@ -497,8 +505,8 @@ void StickCollide(u8 ID)
             {
                 offset[1]=SPR_Origin+VDP_HWidth+1;
                 offset[2]=box[0].y1;
-                offset[1]-=0x80;
-                offset[2]-=0x80;
+                offset[1]-=SPR_Origin;
+                offset[2]-=SPR_Origin;
                 SPR_setPosition(&GameSprites[SOff_paddle+ID], offset[1],offset[2]);
                 box[0]=GetBox(&GameSprites[SOff_paddle+ID]); //Update box
             }
@@ -538,4 +546,246 @@ void StickCollide(u8 ID)
 
  next P
  */
+}
+
+//Routine to make all pucks move
+void PuckMove(u8 act, Puck pux, Vect2D_s16 Ang)
+{
+/*
+Act=
+0=Move all
+1=Stop a puck, change its dir/spd, reupdate
+2=Display all pucks
+*/
+
+    u8 i;   //Generic counter var
+    u8 max; //Max pucks to process
+    u16 x,y;
+
+    //Set amount of pucks to process
+    if ((Player[0].aPwr==Pwr_MPuck)||(Player[1].aPwr==Pwr_MPuck))
+    {
+        max=Max_Pucks;
+    }
+    else
+    {
+        max=1;
+    }
+
+    //Dipslay the pucks
+    if (act==2)
+    {
+        SPR_update(GameSprites,SOff_Total);
+    }
+    else
+    {
+        //Change direction of puck
+        if ((act==1)&&((Ang.x!=0)&&(Ang.y!=0)))
+        {
+            pux.v.x=0;
+            pux.v.y=0;
+            pux.v.x=Ang.x;
+            pux.v.y=Ang.y;
+        }
+
+        //Move all pucks
+        for (i=0;i<=Max_Pucks;i++)
+        {
+            x=GameSprites[SOff_pucks+i].x;
+            y=GameSprites[SOff_pucks+i].y;
+            x+=Pux[i].v.x;
+            y+=Pux[i].v.y;
+            x-=SPR_Origin;
+            y-=SPR_Origin;
+            SPR_setPosition(&(GameSprites[SOff_pucks+i]),x,y);
+            if (act==0)
+            {
+                PuckCollide();
+            }
+        }
+    }
+}
+
+//Routine to check and handle puck collisions
+void PuckCollide()
+{
+    _Box Pt[2];
+    u16 ymin;
+    u16 ymax;
+    u16 delta;
+    u8 Goal=_FALSE;
+    u8 Hit=_FALSE;
+    u8 T;
+
+    u8 i,j;
+    u16 x,y;
+    u8 ID;
+
+    // !@ Buggy?
+    Opts[1]=2;      // !@
+    switch(Opts[1])
+    {
+        case 0:
+            delta=30;
+            break;
+        case 1:
+            delta=64;
+            break;
+        case 2:
+            delta=80;
+            break;
+    }
+
+    ymin = SPR_Origin + (VDP_HHeight - delta); //Set min y value of goal
+    ymax = SPR_Origin + (VDP_HHeight + delta);  //Set max y ~
+
+    for (ID=0;ID<=Max_Pucks;ID++)
+    {
+        if (Pux[ID].active==PTRUE)
+        {
+            Pt[0]=GetBox(&(GameSprites[SOff_pucks+ID]));
+            Goal=_FALSE;
+
+            //Check for goal on left side
+            if (Goal==_FALSE)
+            {
+                if ((Pt[0].x1<=SPR_Origin+3)&&((Pt[0].y1>=ymin)&&(Pt[0].y2<=ymax)))
+                {
+                    //Allocate goal to appropriate player, dependent on who is on what side
+                    if (Player[0].Side==_FALSE)
+                    {
+                        Player[1].Score++;
+                    }
+                    else
+                    {
+                        Player[0].Score++;
+                    }
+                    GoalSink();
+                    Goal=PTRUE;
+                }
+            }
+
+            //Ditto for goal on right side
+            // !@ This is not working
+            /*
+            if (Goal==_FALSE)
+            {
+                if ((Pt[0].x2>=SPR_Origin+(VDP_Width-3))&&((Pt[0].y1>=ymin)&&(Pt[0].y2<=ymax)))
+                {
+                    if (Player[1].Side==PTRUE)
+                    {
+                        Player[0].Score++;
+                    }
+                    else
+                    {
+                        Player[1].Score++;
+                    }
+                }
+                GoalSink();
+                Goal=PTRUE;
+            }
+            */
+
+            //Check border collisions
+            if (Goal==_FALSE)
+            {
+                //Left border
+                if (Pt[0].x1<=SPR_Origin+2)
+                {
+                    //Fix position
+                    Pux[ID].v.x*=-1;
+                    x=SPR_Origin+5;
+                    y=Pt[0].y1;
+                    x-=SPR_Origin;
+                    y-=SPR_Origin;
+                    SPR_setPosition(&(GameSprites[SOff_pucks+ID]),x,y);
+                    echo_play_sfx(SFX_04);
+                }
+
+                //Same idea for other borders
+                //Top border
+                if (Pt[0].y1<=SPR_Origin+2)
+                {
+                    //Fix position
+                    Pux[ID].v.y*=-1;
+                    x=Pt[0].x1;
+                    y=SPR_Origin+5;
+                    x-=SPR_Origin;
+                    y-=SPR_Origin;
+                    SPR_setPosition(&(GameSprites[SOff_pucks+ID]),x,y);
+                    echo_play_sfx(SFX_04);
+                }
+
+                //Right border
+                if (Pt[0].x2>=SPR_Origin+(VDP_Width-2))
+                {
+                    //Fix position
+                    Pux[ID].v.x*=-1;
+                    x=SPR_Origin+(VDP_Width-(Pt[0].w+5));
+                    y=Pt[0].y1;
+                    x-=SPR_Origin;
+                    y-=SPR_Origin;
+                    SPR_setPosition(&(GameSprites[SOff_pucks+ID]),x,y);
+                    echo_play_sfx(SFX_04);
+                }
+
+                //Bottom border
+                if (Pt[0].y2>=SPR_Origin+(VDP_Height-2))
+                {
+                    //Fix position
+                    Pux[ID].v.y*=-1;
+                    x=Pt[0].x1;
+                    y=SPR_Origin+(VDP_Height-(Pt[0].h+5));
+                    x-=SPR_Origin;
+                    y-=SPR_Origin;
+                    SPR_setPosition(&(GameSprites[SOff_pucks+ID]),x,y);
+                    echo_play_sfx(SFX_04);
+                }
+
+                Pt[0]=GetBox(&(GameSprites[SOff_pucks+ID]));    //Update the box
+                // !@Do inter-puck collision here
+                // !@Do object collision here
+
+                //Check player stick collisions
+                for (i=0;i<=1;i++)
+                {
+                    Pt[1]=GetBox(&(GameSprites[SOff_pucks+ID]));
+                    Pt[0]=GetBox(&(GameSprites[SOff_paddle+i]));    //Stick
+                    Hit=CheckCollision(&Pt);
+                    if (Hit==PTRUE)
+                    {
+                        StdCol(&Pt, 2, ID, &SFX_03);
+                        PuckMove(1,Pux[ID],V2D_s16_Zero);
+                    }
+                }
+            }
+        }
+    }
+}
+
+//Routine to process a goal
+void GoalSink()
+{
+    echo_play_sfx(SFX_29);  //"Goal!"
+    if (Player[0].aPwr==Pwr_MPuck)
+    {
+        // !@ Do multipluck stuff here
+    }
+    else
+    {
+        //Normal puck sinking (no multi-puck)
+        echo_wait_sfx(SFX_08);  //Do Siren sfx, with pause
+
+        //Stop primary puck's motion, place at center
+        Pux[0].v.x=0;
+        Pux[0].v.y=0;
+        SPR_setPosition(&(GameSprites[SOff_pucks]),VDP_HWidth-12,VDP_HHeight-12);
+
+        // !@ Disable effects of swap players and kill player powerups upon goal (here)
+        HUD();          //Update HUD
+        Announcer();    //Announcer guy stuff
+        //Reset player positions
+        SPR_setPosition(&GameSprites[SOff_paddle],80-16,128-16);
+        SPR_setPosition(&GameSprites[SOff_paddle+1],240-16,128-16);
+    }
 }
