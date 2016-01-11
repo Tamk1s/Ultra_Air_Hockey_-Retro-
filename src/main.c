@@ -81,7 +81,6 @@ void BtnStick(u16 joy, u16 changed, u16 state)
     u8 Set=0;
     u8 ID=0;
     u8 MoveIt=_FALSE;
-    //@Last slot speeds are not working? Also, on init, red puck blasts off into space
     u8 Speeds[2][3]=
     {
         {0,1,2,3},
@@ -108,7 +107,7 @@ void BtnStick(u16 joy, u16 changed, u16 state)
     {
         ID=0;
     }
-    else
+    else if (joy==JOY_2)
     {
         ID=1;
     }
@@ -131,10 +130,11 @@ void BtnStick(u16 joy, u16 changed, u16 state)
         }
 
         //B Button
-        if ((state & BUTTON_B) && (Opts[2]==PTRUE))
+        //Opts[2]=PTRUE;
+        if ((state & BUTTON_B)&&(Opts[2]==PTRUE))
         {
             //if no powerups are active, then let the player activate his powerup
-            if ((Player[0].aPwr==Pwr_Null) && (Player[1].aPwr==Pwr_Null))
+            if ((Player[0].aPwr==Pwr_Null)&&(Player[1].aPwr==Pwr_Null))
             {
                 Player[ID].aPwr=Player[ID].sPwr;    //Set active power to saved power
                 Player[ID].sPwr=0;                  //Delete saved powerup (it just got used)
@@ -147,7 +147,8 @@ void BtnStick(u16 joy, u16 changed, u16 state)
         //{
 
             //C Button
-            if ((state & BUTTON_C)&& (Opts[2]==PTRUE))
+            //Opts[2]=PTRUE;
+            if ((state & BUTTON_C)&&(Opts[2]==PTRUE))
             {
                 //Do some debug stuff (Here, cycle saved powerups for testing)
                 Player[ID].sPwr++;  //'Increment saved powerup, wrap between 0 & 11

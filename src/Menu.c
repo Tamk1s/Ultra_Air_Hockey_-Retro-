@@ -150,8 +150,9 @@ void ChrselMenu()
     SPR_init(16);   //Sprite tile cache of 16 tiles
     SYS_enableInts();
 
-    //VDP_setPalette(MISCPAL, SPR_Arrow.palette->data);                                              //Init pal OBJPAL to Arrow pal
+    // !@ Screws up
     //SPR_initSprite(&sprites[0], &SPR_Arrow, 271, 266, TILE_ATTR(MISCPAL,TRUE,FALSE,FALSE));      //Init the Arrow Sprite
+    //VDP_setPalette(MISCPAL, SPR_Arrow.palette->data);                                              //Init pal OBJPAL to Arrow pal
 
     echo_play_sfx(SFX_13);              //"How many players are going to play today?"
     JOY_setEventHandler( &BtnHMenu );   //Setup joy handler to HMenu type

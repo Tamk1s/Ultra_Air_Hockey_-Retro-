@@ -117,14 +117,15 @@ void InitGame(u8 act)
         */
 
         //Power HUD
+        //Opts[2]=PTRUE;
         if (Opts[2]==PTRUE)
         {
-            SPR_initSprite(&GameSprites[SOff_power], &SPR_Pwr, 0, 0, TILE_ATTR(PWRPAL,TRUE,FALSE,FALSE));
-            SPR_setFrame(&GameSprites[SOff_power],Pwr_Null);
-            SPR_initSprite(&GameSprites[SOff_spower], &SPR_Pwr, 0, 0, TILE_ATTR(PWRPAL,TRUE,FALSE,FALSE));
-            SPR_setFrame(&GameSprites[SOff_spower],Pwr_Null);
-            SPR_initSprite(&GameSprites[SOff_spower+1], &SPR_Pwr, 0, 0, TILE_ATTR(PWRPAL,TRUE,FALSE,FALSE));
-            SPR_setFrame(&GameSprites[SOff_spower+1],Pwr_Null);
+            SPR_initSprite(&GameSprites[SOff_power], &SPR_Pwr, 24, 48, TILE_ATTR(PWRPAL,TRUE,FALSE,FALSE));
+            SPR_setFrame(&GameSprites[SOff_power],Pwr_Block);
+            SPR_initSprite(&GameSprites[SOff_spower], &SPR_Pwr, 24, 24, TILE_ATTR(PWRPAL,TRUE,FALSE,FALSE));
+            SPR_setFrame(&GameSprites[SOff_spower],Pwr_BSaver);
+            SPR_initSprite(&GameSprites[SOff_spower+1], &SPR_Pwr, 296, 24, TILE_ATTR(PWRPAL,TRUE,FALSE,FALSE));
+            SPR_setFrame(&GameSprites[SOff_spower+1],Pwr_BStick);
         }
 
         //Update it all!
@@ -267,12 +268,13 @@ void HUD()
         x=6;
         y=26;
         FPS=getFPS();
+        strclr(&val);
         uintToStr(FPS,val,1);
         VDP_setTextPalette(OBJPAL);
         VDP_drawText("FPS: ",1,y);
         VDP_drawText("  ",x,y);
         VDP_drawText(val,x,y);
-
+        strclr(&val);
 
         x=6;
         y=27;
@@ -282,31 +284,29 @@ void HUD()
         VDP_drawText("MEM: ",1,y);
         VDP_drawText("      ",x,y);
         VDP_drawText(val,x,y);
+        strclr(&val);
     }
 
     //If powerups enabled
+    //Opts[2]=PTRUE;
     if (Opts[2]==PTRUE)
     {
         //Determine who is using a powerup
-        if (Player[0].aPwr==Pwr_Null)
+        ID=2;
+        if (Player[0].aPwr!=Pwr_Null)
         {
             ID=0;
         }
-        else
+        else if (Player[1].aPwr!=Pwr_Null)
         {
             ID=1;
         }
 
         //Set active powerup sprites for appropriate players.
-        if (ID==0)
+        if (ID!=2)
         {
-            SPR_setFrame(&GameSprites[SOff_power],Player[0].aPwr);
+            SPR_setFrame(&GameSprites[SOff_power],Player[ID].aPwr);
         }
-        else
-        {
-            SPR_setFrame(&GameSprites[SOff_power],Player[1].aPwr);
-        }
-
         //Set saved powerup sprites
         SPR_setFrame(&GameSprites[SOff_spower],Player[0].sPwr);
         SPR_setFrame(&GameSprites[SOff_spower+1],Player[1].sPwr);
@@ -321,6 +321,7 @@ void HUD()
         y=1;
 
         //If powerups on
+        //Opts[2]=PTRUE;
         if (Opts[2]==PTRUE)
         {
             //Set Saved powerup
@@ -338,7 +339,7 @@ void HUD()
         //Ditto for other side, just different coordinates
         x=38;
         y=1;
-
+        //Opts[2]=PTRUE;
         if (Opts[2]==PTRUE)
         {
             SPR_setPosition(&GameSprites[SOff_spower],296,24);
@@ -356,13 +357,14 @@ void HUD()
     VDP_setTextPalette(PLNPAL);              //Set text to red
     VDP_drawText("  ",x,y);
     VDP_drawText(val,x,y);                  //Draw it
+    strclr(&val);
 
     //Block similar to previous, but if/else sections swapped, indices changed, and using blue text
     if (Player[1].Side==PTRUE)
     {
         x=38;
         y=1;
-
+        //Opts[2]=PTRUE;
         if (Opts[2]==PTRUE)
         {
             SPR_setPosition(&GameSprites[SOff_spower+1],296,24);
@@ -379,6 +381,7 @@ void HUD()
         y=1;
 
         //If powerups on
+        //Opts[2]=PTRUE;
         if (Opts[2]==PTRUE)
         {
             //Set Saved powerup
@@ -396,6 +399,7 @@ void HUD()
     VDP_setTextPalette(OBJPAL);
     VDP_drawText("  ",x,y);
     VDP_drawText(val,x,y);
+    strclr(&val);
 }
 
 //Routine to handle pausing the game!

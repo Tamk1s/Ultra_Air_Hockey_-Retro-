@@ -4,6 +4,15 @@
 //ID 0=pseudo cls routine
 void DrawBG(u8 ID)
 {
+    /*
+    u16 pal=
+    {
+        0x8728, 0x005C, 0x00C4, 0x005C, 0x4746, 0x68D4, 0xBEB4, 0x0000,
+        0x8728, 0x005C, 0x00C4, 0x005C, 0x2073, 0x7828, 0x3638, 0x5C29
+    };
+    */
+
+
     ind = TILE_USERINDEX;
     switch (ID)
     {
@@ -39,14 +48,8 @@ void DrawBG(u8 ID)
             VDP_drawImageEx(APLAN, &S7, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, ind), 0, 0, TRUE, FALSE);
             break;
         case 8:
-            //@Fix me!
+            //VDP_setPalette(PAL0, pal);
             VDP_drawImageEx(APLAN, &S8, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, ind), 0, 0, TRUE, FALSE);
-            u16 pal=
-            {
-                0x8728, 0x005C, 0x00C4, 0x005C, 0x4746, 0x68D4, 0xBEB4, 0x0000,
-                0x8728, 0x005C, 0x00C4, 0x005C, 0x2073, 0x7828, 0x3638, 0x5C29
-            };
-            VDP_setPalette(PAL0, pal);
             break;
         case 9:
             VDP_drawImageEx(APLAN, &S9, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, ind), 0, 0, TRUE, FALSE);
