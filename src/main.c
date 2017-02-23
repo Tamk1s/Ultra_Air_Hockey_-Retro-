@@ -26,11 +26,11 @@ int main ( void )
         //Setup appropriate joy types for speediness
         //if (DBUG==_FALSE)
         //{
-            //JOY_setSupport(PORT_1, JOY_SUPPORT_3BTN);
+        //JOY_setSupport(PORT_1, JOY_SUPPORT_3BTN);
         //}
         //else
         //{
-            JOY_setSupport(PORT_1, JOY_SUPPORT_6BTN);
+        JOY_setSupport(PORT_1, JOY_SUPPORT_6BTN);
         //}
 
         Opts[0]=_FALSE;          // !@ Remove me after debugging
@@ -41,17 +41,16 @@ int main ( void )
         }
         //else
         //{
-            //if (DBUG==_FALSE)
-            //{
-                //JOY_setSupport(PORT_2, JOY_SUPPORT_3BTN);
-            //}
-            //else
-            //{
-              //  JOY_setSupport(PORT_2, JOY_SUPPORT_6BTN);
-            //}
+        //if (DBUG==_FALSE)
+        //{
+        //JOY_setSupport(PORT_2, JOY_SUPPORT_3BTN);
+        //}
+        //else
+        //{
+        //  JOY_setSupport(PORT_2, JOY_SUPPORT_6BTN);
+        //}
         //}
         JOY_setEventHandler(BtnStick);    //Setup skip joy handler
-
         while((Player[0].Score<10)&&(Player[1].Score<10))
         {
             PuckMove(2,Pux[0],V2D_s16_Zero);    //Display all pucks
@@ -59,18 +58,14 @@ int main ( void )
             BtnStickMove(JOY_1, JOY_readJoypad(JOY_1));
             //if (Opts[0]==PTRUE)
             //{
-                // !@ This does not work. Refactor into BtnStick?
-                //BtnStickMove(JOY_2, JOY_readJoypad(JOY_2));
+            // !@ This does not work. Refactor into BtnStick?
+            //BtnStickMove(JOY_2, JOY_readJoypad(JOY_2));
             //}
             //else
             //{
-                //@Goto CPU Stick function here
+            //@Goto CPU Stick function here
             //}
 
-            //if (DBUG==PTRUE)
-            //{
-                HUD();
-            //}
             VDP_waitVSync();                        //Sync
         }
     }
@@ -115,87 +110,87 @@ void BtnStick(u16 joy, u16 changed, u16 state)
     //If player is alive
     //if (Player[ID].alive==PTRUE)
     //{
-        //A Button
-        if (state & BUTTON_A)
+    //A Button
+    if (state & BUTTON_A)
+    {
+        //Increment c value, Wrap between 0 & 3
+        Player[ID].c++;
+        if (Player[ID].c>3)
         {
-            //Increment c value, Wrap between 0 & 3
-            Player[ID].c++;
-            if (Player[ID].c>3)
-            {
-                Player[ID].c=0;
-            }
-
-            //Retrieve and set the velocity for the player
-            Player[ID].v=Speeds[Set][Player[ID].c];
+            Player[ID].c=0;
         }
 
-        //B Button
-        //Opts[2]=PTRUE;
-        if ((state & BUTTON_B)&&(Opts[2]==PTRUE))
+        //Retrieve and set the velocity for the player
+        Player[ID].v=Speeds[Set][Player[ID].c];
+    }
+
+    //B Button
+    if ((state & BUTTON_B)&&(Opts[2]==PTRUE))
+    {
+        //if no powerups are active, then let the player activate his powerup
+        if ((Player[0].aPwr==Pwr_Null)&&(Player[1].aPwr==Pwr_Null))
         {
-            //if no powerups are active, then let the player activate his powerup
-            if ((Player[0].aPwr==Pwr_Null)&&(Player[1].aPwr==Pwr_Null))
-            {
-                Player[ID].aPwr=Player[ID].sPwr;    //Set active power to saved power
-                Player[ID].sPwr=0;                  //Delete saved powerup (it just got used)
-                HUD();
-                //@Powerups PTRUE, P_aPwr(char), Char 'Initialize powerup's effects for the player
-            }
+            Player[ID].aPwr=Player[ID].sPwr;    //Set active power to saved power
+            Player[ID].sPwr=Pwr_Null;           //Delete saved powerup (it just got used)
+            HUD();
+            //@Powerups PTRUE, P_aPwr(char), Char 'Initialize powerup's effects for the player
         }
+    }
 
-        //if (DBUG==PTRUE)
-        //{
+    //if (DBUG==PTRUE)
+    //{
 
-            //C Button
-            //Opts[2]=PTRUE;
-            if ((state & BUTTON_C)&&(Opts[2]==PTRUE))
-            {
-                //Do some debug stuff (Here, cycle saved powerups for testing)
-                Player[ID].sPwr++;  //'Increment saved powerup, wrap between 0 & 11
-                if (Player[ID].sPwr>Pwr_Null)
-                {
-                    Player[ID].sPwr=Pwr_MPuck;
-                }
-                HUD(); //Refresh hud
-            }
-
-            //X Button
-            if (state & BUTTON_X)
-            {
-                Announcer();
-            }
-
-            //Y Button
-            if (state & BUTTON_Y)
-            {
-                //Increment player 1's score, wrap between 0 & 10
-                Player[0].Score++;
-                if (Player[0].Score>10)
-                {
-                    Player[0].Score=0;
-                }
-                HUD();
-            }
-
-            //Z Button
-            if (state & BUTTON_Z)
-            {
-                //Increment player 2's score, wrap between 0 & 10
-                Player[1].Score++;
-                if (Player[1].Score>10)
-                {
-                    Player[1].Score=0;
-                }
-                HUD();
-            }
-        //}
-
-        //Start button, Do Pause screen
-        if (state & BUTTON_START)
+    //C Button
+    if ((state & BUTTON_C)&&(Opts[2]==PTRUE))
+    {
+        //Do some debug stuff (Here, cycle saved powerups for testing)
+        Player[ID].sPwr++;  //'Increment saved powerup, wrap between 0 & 11
+        if (Player[ID].sPwr>Pwr_Null)
         {
-            Paused();
-            JOY_setEventHandler(BtnStick); //Restore joypad interrupt
+            Player[ID].sPwr=Pwr_MPuck;
         }
+        HUD(); //Refresh hud
+    }
+
+    /*
+    //X Button
+    if (state & BUTTON_X)
+    {
+        Announcer();
+    }
+
+    //Y Button
+    if (state & BUTTON_Y)
+    {
+        //Increment player 1's score, wrap between 0 & 10
+        Player[0].Score++;
+        if (Player[0].Score>10)
+        {
+            Player[0].Score=0;
+        }
+        HUD();
+    }
+
+    //Z Button
+    if (state & BUTTON_Z)
+    {
+        //Increment player 2's score, wrap between 0 & 10
+        Player[1].Score++;
+        if (Player[1].Score>10)
+        {
+            Player[1].Score=0;
+        }
+        HUD();
+    }
+    */
+    //}
+
+    //Start button, Do Pause screen
+    if (state & BUTTON_START)
+    {
+        Paused();
+        JOY_setEventHandler(BtnStick); //Restore joypad interrupt
+    }
     //}
 }
 
@@ -224,77 +219,77 @@ void BtnStickMove(u8 numjoy, u16 value)
     //if (Player[ID].alive==PTRUE)
     //{
 
-        //Up
-        if (value & BUTTON_UP)
+    //Up
+    if (value & BUTTON_UP)
+    {
+        dy=Player[ID].v;
+        ny=NTRUE;
+        MoveIt=PTRUE;
+    }
+    else if (value & BUTTON_DOWN)
+    {
+        dy=Player[ID].v;
+        ny=PTRUE;
+        MoveIt=PTRUE;
+    }
+
+    //Left
+    if (value & BUTTON_LEFT)
+    {
+        dx=Player[ID].v;
+        nx=NTRUE;
+        MoveIt=PTRUE;
+    }
+    else if (value & BUTTON_RIGHT)
+    {
+        dx=Player[ID].v;
+        nx=PTRUE;
+        MoveIt=PTRUE;
+    }
+
+    if (MoveIt==PTRUE)
+    {
+        //Move the player
+        x=(&GameSprites[SOff_paddle+ID])->x;
+        y=(&GameSprites[SOff_paddle+ID])->y;
+        x-=SPR_Origin;
+        y-=SPR_Origin;
+
+        switch(nx)
         {
-            dy=Player[ID].v;
-            ny=NTRUE;
-            MoveIt=PTRUE;
+        case NTRUE:
+            Player[ID].ang.x=0-dx;
+            x-=dx;
+            break;
+        case PTRUE:
+            Player[ID].ang.x=dx;
+            x+=dx;
+            break;
         }
-        else if (value & BUTTON_DOWN)
+
+        switch(ny)
         {
-            dy=Player[ID].v;
-            ny=PTRUE;
-            MoveIt=PTRUE;
+        case NTRUE:
+            Player[ID].ang.y=0-dy;
+            y-=dy;
+            break;
+        case PTRUE:
+            Player[ID].ang.y=dy;
+            y+=dy;
+            break;
         }
 
-        //Left
-        if (value & BUTTON_LEFT)
+        SPR_setPosition(&GameSprites[SOff_paddle+ID],x,y);
+
+        //Update StickStats and show DY/DX values!
+        if (DBUG==PTRUE)
         {
-            dx=Player[ID].v;
-            nx=NTRUE;
-            MoveIt=PTRUE;
+            StickStats(ID,dx,dy,nx,ny);
         }
-        else if (value & BUTTON_RIGHT)
-        {
-            dx=Player[ID].v;
-            nx=PTRUE;
-            MoveIt=PTRUE;
-        }
-
-        if (MoveIt==PTRUE)
-        {
-            //Move the player
-            x=(&GameSprites[SOff_paddle+ID])->x;
-            y=(&GameSprites[SOff_paddle+ID])->y;
-            x-=SPR_Origin;
-            y-=SPR_Origin;
-
-            switch(nx)
-            {
-            case NTRUE:
-                Player[ID].ang.x=0-dx;
-                x-=dx;
-                break;
-            case PTRUE:
-                Player[ID].ang.x=dx;
-                x+=dx;
-                break;
-            }
-
-            switch(ny)
-            {
-            case NTRUE:
-                Player[ID].ang.y=0-dy;
-                y-=dy;
-                break;
-            case PTRUE:
-                Player[ID].ang.y=dy;
-                y+=dy;
-                break;
-            }
-
-            SPR_setPosition(&GameSprites[SOff_paddle+ID],x,y);
-
-            //Update StickStats and show DY/DX values!
-            if (DBUG==PTRUE)
-            {
-                StickStats(ID,dx,dy,nx,ny);
-            }
-            //@GetBox 1,P_hand(char),#FALSE,#FALSE,#FALSE
-            StickCollide(ID);   //Check stick colllisions
-            SPR_update(GameSprites,SOff_Total);
-        }
+        //@GetBox 1,P_hand(char),#FALSE,#FALSE,#FALSE
+        StickCollide(ID);   //Check stick colllisions
+        SPR_update(GameSprites,SOff_Total);
+    }
     //}
 }
 
@@ -428,8 +423,8 @@ void StickCollide(u8 ID)
 
     //Check board bounds
 
-	//Left border
-	offset[0]=SPR_Origin+2;
+    //Left border
+    offset[0]=SPR_Origin+2;
     if (box[0].x1<=offset[0])
     {
         offset[1]=SPR_Origin+3;
@@ -455,8 +450,8 @@ void StickCollide(u8 ID)
         echo_play_sfx(Hit_Sfx);
     }
 
-	//Right border
-	offset[0]=(SPR_Origin+VDP_Width)-2;
+    //Right border
+    offset[0]=(SPR_Origin+VDP_Width)-2;
     if (box[0].x2>=offset[0])
     {
         offset[1]=(SPR_Origin+VDP_Width)-(box[0].w+2);
@@ -468,8 +463,8 @@ void StickCollide(u8 ID)
         echo_play_sfx(Hit_Sfx);
     }
 
-	//Bottom border
-	offset[0]=(SPR_Origin+VDP_Height)-2;
+    //Bottom border
+    offset[0]=(SPR_Origin+VDP_Height)-2;
     if (box[0].y2>=offset[0])
     {
         offset[1]=box[0].x1;
@@ -545,19 +540,19 @@ void StickCollide(u8 ID)
     ENDIF
     endif
 
- next P
- */
+    next P
+    */
 }
 
 //Routine to make all pucks move
 void PuckMove(u8 act, Puck pux, Vect2D_s16 Ang)
 {
-/*
-Act=
-0=Move all
-1=Stop a puck, change its dir/spd, reupdate
-2=Display all pucks
-*/
+    /*
+    Act=
+    0=Move all
+    1=Stop a puck, change its dir/spd, reupdate
+    2=Display all pucks
+    */
 
     u8 i;   //Generic counter var
     u8 max; //Max pucks to process
@@ -590,18 +585,23 @@ Act=
         }
 
         //Move all pucks
-        for (i=0;i<=Max_Pucks;i++)
+        // !@ Should be max
+        for (i=0; i<=Max_Pucks; i++)
         {
-            x=GameSprites[SOff_pucks+i].x;
-            y=GameSprites[SOff_pucks+i].y;
-            x+=Pux[i].v.x;
-            y+=Pux[i].v.y;
-            x-=SPR_Origin;
-            y-=SPR_Origin;
-            SPR_setPosition(&(GameSprites[SOff_pucks+i]),x,y);
-            if (act==0)
+            if (Pux[i].active==PTRUE)
             {
-                PuckCollide();
+                x=GameSprites[SOff_pucks+i].x;
+                y=GameSprites[SOff_pucks+i].y;
+                x+=Pux[i].v.x;
+                y+=Pux[i].v.y;
+                x-=SPR_Origin;
+                y-=SPR_Origin;
+                SPR_setPosition(&(GameSprites[SOff_pucks+i]),x,y);
+
+                if (act==0)
+                {
+                    PuckCollide();
+                }
             }
         }
     }
@@ -626,21 +626,21 @@ void PuckCollide()
     Opts[1]=2;      // !@
     switch(Opts[1])
     {
-        case 0:
-            delta=30;
-            break;
-        case 1:
-            delta=64;
-            break;
-        case 2:
-            delta=80;
-            break;
+    case 0:
+        delta=30;
+        break;
+    case 1:
+        delta=64;
+        break;
+    case 2:
+        delta=80;
+        break;
     }
 
     ymin = SPR_Origin + (VDP_HHeight - delta); //Set min y value of goal
     ymax = SPR_Origin + (VDP_HHeight + delta);  //Set max y ~
 
-    for (ID=0;ID<=Max_Pucks;ID++)
+    for (ID=0; ID<=Max_Pucks; ID++)
     {
         if (Pux[ID].active==PTRUE)
         {
@@ -748,7 +748,7 @@ void PuckCollide()
                 // !@Do object collision here
 
                 //Check player stick collisions
-                for (i=0;i<=1;i++)
+                for (i=0; i<=1; i++)
                 {
                     Pt[1]=GetBox(&(GameSprites[SOff_pucks+ID]));
                     Pt[0]=GetBox(&(GameSprites[SOff_paddle+i]));    //Stick
@@ -785,6 +785,7 @@ void GoalSink()
         // !@ Disable effects of swap players and kill player powerups upon goal (here)
         HUD();          //Update HUD
         Announcer();    //Announcer guy stuff
+
         //Reset player positions
         SPR_setPosition(&GameSprites[SOff_paddle],80-16,128-16);
         SPR_setPosition(&GameSprites[SOff_paddle+1],240-16,128-16);

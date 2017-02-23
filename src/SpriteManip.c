@@ -40,54 +40,54 @@ void StdCol(_Box *Pt, u8 T, s8 S, u8 *SI)
     Vect2D_s16 NewVtr;
     switch(T)
     {
-        //Complex rebound (paddle vs. puck)
-        case 2:
-            NewVtr.x=Pt[1].cx-Pt[0].cx;
-            NewVtr.y=Pt[1].cy-Pt[0].cy;
+    //Complex rebound (paddle vs. puck)
+    case 2:
+        NewVtr.x=Pt[1].cx-Pt[0].cx;
+        NewVtr.y=Pt[1].cy-Pt[0].cy;
 
-            //Slomo and fastmo speed adjustments]
-            if ((Player[0].aPwr==Pwr_Slow)||(Player[1].aPwr==Pwr_Slow))
-            {
-                NewVtr.x=PCentChng(NewVtr.x,PCENT,NTRUE);
-                NewVtr.y=PCentChng(NewVtr.y,PCENT,NTRUE);
-            }
-            if ((Player[0].aPwr==Pwr_Fast)||(Player[1].aPwr==Pwr_Fast))
-            {
-                NewVtr.x=PCentChng(NewVtr.x,PCENT,PTRUE);
-                NewVtr.y=PCentChng(NewVtr.y,PCENT,PTRUE);
-            }
+        //Slomo and fastmo speed adjustments]
+        if ((Player[0].aPwr==Pwr_Slow)||(Player[1].aPwr==Pwr_Slow))
+        {
+            NewVtr.x=PCentChng(NewVtr.x,PCENT,NTRUE);
+            NewVtr.y=PCentChng(NewVtr.y,PCENT,NTRUE);
+        }
+        if ((Player[0].aPwr==Pwr_Fast)||(Player[1].aPwr==Pwr_Fast))
+        {
+            NewVtr.x=PCentChng(NewVtr.x,PCENT,PTRUE);
+            NewVtr.y=PCentChng(NewVtr.y,PCENT,PTRUE);
+        }
 
-            //Apply new vector to other obj (the puck)
-            NewVtr.x=NewVtr.x/4;
-            NewVtr.y=NewVtr.y/4;
-            Pux[S].v=NewVtr;
-            break;
-
-
-        //Death collision (sunk multi-pucks, puck vs. powerups with powerups dying)
-        case 3:
-            // !@ Insert code here
-            break;
+        //Apply new vector to other obj (the puck)
+        NewVtr.x=NewVtr.x/4;
+        NewVtr.y=NewVtr.y/4;
+        Pux[S].v=NewVtr;
+        break;
 
 
-        //Solid collision.
-        default:
-            //Utilises clipping in order to make the colider near edge
-            //of the collided object if overlapped
+    //Death collision (sunk multi-pucks, puck vs. powerups with powerups dying)
+    case 3:
+        // !@ Insert code here
+        break;
 
-            //If colider hit collided object from left
-            /*
-            if ((Pt[0].x2>=Pt[1].x1)&&(Pt[0].x2<=Pt[1].x2))
-            {
-                NewVtr.x=Pt[1].x1-Pt[0].w;
-                NewVtr.y=Pt[0].cy-2;
-                NewVtr.x-=SPR_Origin;
-                NewVtr.y-=SPR_Origin;
-                SPR_setPosition(&(Pt[0].hand),NewVtr.x,NewVtr.y);
-                Pt[0]=GetBox(&(Pt[0].hand));
-            }
-            */
-            break;
+
+    //Solid collision.
+    default:
+        //Utilises clipping in order to make the colider near edge
+        //of the collided object if overlapped
+
+        //If colider hit collided object from left
+        /*
+        if ((Pt[0].x2>=Pt[1].x1)&&(Pt[0].x2<=Pt[1].x2))
+        {
+            NewVtr.x=Pt[1].x1-Pt[0].w;
+            NewVtr.y=Pt[0].cy-2;
+            NewVtr.x-=SPR_Origin;
+            NewVtr.y-=SPR_Origin;
+            SPR_setPosition(&(Pt[0].hand),NewVtr.x,NewVtr.y);
+            Pt[0]=GetBox(&(Pt[0].hand));
+        }
+        */
+        break;
     }
 
     if (SI!=SFX_31)

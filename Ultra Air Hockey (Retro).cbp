@@ -12,8 +12,8 @@
 			<Build command="$make -f $makefile" />
 			<CompileFile command="$make -f $makefile $file" />
 			<Clean command="$make -f $makefile clean" />
-			<DistClean command="$make -f $makefile distclean$target" />
-			<AskRebuildNeeded command="$make -q -f $makefile clean" />
+			<DistClean command="" />
+			<AskRebuildNeeded command="$make -q $makefile $target" />
 			<SilentBuild command="$make -f $makefile &gt; $(CMD_NULL)" />
 		</MakeCommands>
 		<Build>
@@ -22,25 +22,20 @@
 				<Option object_output="out/" />
 				<Option type="1" />
 				<Option compiler="sgdk" />
-				<Compiler>
-					<Add option="-O2" />
-				</Compiler>
-				<Linker>
-					<Add option="-s" />
-				</Linker>
+				<Option projectCompilerOptionsRelation="-1" />
+				<Option projectLinkerOptionsRelation="-1" />
+				<Option projectIncludeDirsRelation="-1" />
+				<Option projectLibDirsRelation="-1" />
 				<MakeCommands>
 					<Build command="$make -f $makefile" />
 					<CompileFile command="$make -f $makefile $file" />
 					<Clean command="$make -f $makefile clean" />
-					<DistClean command="$make -f $makefile distclean$target" />
-					<AskRebuildNeeded command="$make -q -f $makefile clean" />
+					<DistClean command="" />
+					<AskRebuildNeeded command="$make -q $makefile $target" />
 					<SilentBuild command="$make -f $makefile &gt; $(CMD_NULL)" />
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Compiler>
-			<Add option="-Wall" />
-		</Compiler>
 		<Unit filename="inc/DrawBG.h" />
 		<Unit filename="inc/Menu.h" />
 		<Unit filename="inc/SpriteManip.h" />
@@ -77,7 +72,7 @@
 		</Unit>
 		<Extensions>
 			<code_completion />
-			<envvars set="sgdk" />
+			<envvars set="default" />
 			<lib_finder disable_auto="1" />
 			<debugger />
 			<DoxyBlocks>

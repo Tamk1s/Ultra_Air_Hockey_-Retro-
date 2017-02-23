@@ -21,18 +21,18 @@ void FMV()
     JOY_setEventHandler( &BtnSkip );                                                    //Setup skip joy handler
 
     //Move the Eagle from left to right on screen
-    for (x=0;x<=320;x++)
+    for (x=0; x<=320; x++)
     {
-            SPR_setPosition(&sprites[0],x,128);     //Set new position
-            SPR_update(sprites, 1);                 //Update it
-            VDP_waitVSync();                        //Sync
+        SPR_setPosition(&sprites[0],x,128);     //Set new position
+        SPR_update(sprites, 1);                 //Update it
+        VDP_waitVSync();                        //Sync
 
-            //if Skipping, hide Eagle off screen, and escape FOR loop
-            if (Skip==PTRUE)
-            {
-                SPR_setPosition(&sprites[0],-128,-128);   //Set new position
-                break;
-            }
+        //if Skipping, hide Eagle off screen, and escape FOR loop
+        if (Skip==PTRUE)
+        {
+            SPR_setPosition(&sprites[0],-128,-128);   //Set new position
+            break;
+        }
     }
 
     VDP_resetSprites();
@@ -77,12 +77,12 @@ void Title()
         Time=2000;                  //Set wait time to 2s
 
         //Iterate between screens #1 to #7
-        for (ID=1;ID<=7;ID++)
+        for (ID=1; ID<=7; ID++)
         {
             //If skipping, escape FOR loop
             if (Skip==PTRUE)
             {
-                    break;
+                break;
             }
 
             //If Screen #4, change time to 11s

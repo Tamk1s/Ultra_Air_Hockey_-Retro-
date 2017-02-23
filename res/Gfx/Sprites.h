@@ -35,17 +35,4 @@ extern const SpriteDefinition SPR_ObjsB;
 #define OB_Red 0
 #define OB_Blue 1
 
-/*
-typedef struct
-{
-    *Sprite hand;     //image handle
-    u8 w;            //Image width
-    u8 h;            //Image height
-    u16 x1;         //x coord of top left corner
-    u16 y1;         //y coord of top left corner
-    u16 x2;         //x coord of bottom right corner
-    u16 y2;         //y coord of bottom right corner
-    //u8 V;     //Resultant velocity
-} Box;
-*/
 #endif // _SPRITES_H_

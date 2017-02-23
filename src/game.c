@@ -15,7 +15,7 @@ void InitGame(u8 act)
     if (act==PTRUE)
     {
         //Opts[1]=2;      // !@
-        DrawBG(0);      //Cls
+        DrawBG(1);      //Cls
         BG=14+Opts[1];  //Get appropriate BG ID
         DrawBG(BG);     //Draw it
 
@@ -23,15 +23,15 @@ void InitGame(u8 act)
         //@Set PSong as appropriately
         switch(Opts[1])
         {
-            case 0:
-                echo_play_bgm(BGM_06);
-                break;
-            case 1:
-                echo_play_bgm(BGM_05);
-                break;
-            case 2:
-                echo_play_bgm(BGM_04);
-                break;
+        case 0:
+            echo_play_bgm(BGM_06);
+            break;
+        case 1:
+            echo_play_bgm(BGM_05);
+            break;
+        case 2:
+            echo_play_bgm(BGM_04);
+            break;
         }
 
         //Setup more graphics
@@ -76,7 +76,7 @@ void InitGame(u8 act)
         Player[0].v=0;              //No Velocity
 
         //Create pucks
-        for (i=0;i<=(Max_Pucks-1);i++)
+        for (i=0; i<=(Max_Pucks-1); i++)
         {
             SPR_initSprite(&GameSprites[SOff_pucks+i], &SPR_Pwr, 148, 100, TILE_ATTR(PWRPAL,TRUE,FALSE,FALSE));
             SPR_setFrame(&GameSprites[SOff_pucks+i],SPR_Puck);
@@ -96,15 +96,23 @@ void InitGame(u8 act)
         }
 
         //Create Objs
-        /*
-        for (i=0;i<=(Max_Objs-1);i++)
+        for (i=0; i<=(Max_Objs-1); i++)
         {
             //if powerups enabled
-            if ((i==0) && (Opts[2]==PTRUE))
+            if (i==0)
             {
-                SPR_initSprite(&GameSprites[SOff_objects+i], &SPR_Pwr, 0, 0, TILE_ATTR(PWRPAL,TRUE,FALSE,FALSE));
-                SPR_setFrame(&GameSprites[SOff_objects+i],Pwr_Null);
-                Objs[i].Type=OT_Pwr;
+                if (Opts[2]==PTRUE)
+                {
+                    SPR_initSprite(&GameSprites[SOff_objects+i], &SPR_Pwr, 0, 0, TILE_ATTR(PWRPAL,TRUE,FALSE,FALSE));
+                    SPR_setFrame(&GameSprites[SOff_objects+i],Pwr_Null);
+                    Objs[i].Type=OT_Pwr;
+                }
+                else
+                {
+                    SPR_initSprite(&GameSprites[SOff_objects+i], &SPR_ObjsN, 0, 0, TILE_ATTR(OBJPAL,TRUE,FALSE,FALSE));
+                    SPR_setFrame(&GameSprites[SOff_objects+i],ON_Null);
+                    Objs[i].Type=OT_NULL;
+                }
             }
             else
             {
@@ -114,18 +122,16 @@ void InitGame(u8 act)
             }
             Objs[i].Subtype=OST_NULL;
         }
-        */
 
         //Power HUD
-        //Opts[2]=PTRUE;
         if (Opts[2]==PTRUE)
         {
             SPR_initSprite(&GameSprites[SOff_power], &SPR_Pwr, 24, 48, TILE_ATTR(PWRPAL,TRUE,FALSE,FALSE));
-            SPR_setFrame(&GameSprites[SOff_power],Pwr_Block);
             SPR_initSprite(&GameSprites[SOff_spower], &SPR_Pwr, 24, 24, TILE_ATTR(PWRPAL,TRUE,FALSE,FALSE));
-            SPR_setFrame(&GameSprites[SOff_spower],Pwr_BSaver);
             SPR_initSprite(&GameSprites[SOff_spower+1], &SPR_Pwr, 296, 24, TILE_ATTR(PWRPAL,TRUE,FALSE,FALSE));
-            SPR_setFrame(&GameSprites[SOff_spower+1],Pwr_BStick);
+            SPR_setFrame(&GameSprites[SOff_power],Pwr_MPuck);
+            SPR_setFrame(&GameSprites[SOff_spower],Pwr_MPuck);
+            SPR_setFrame(&GameSprites[SOff_spower+1],Pwr_MPuck);
         }
 
         //Update it all!
@@ -231,14 +237,14 @@ void Announcer()
     else
     {
         //Otherwise, nop out unused word slots for sentence
-        for (i=4;i<=7;i++)
+        for (i=4; i<=7; i++)
         {
             Words[i] = 0;
         }
     }
 
     //Speak the sentence, ala Pete Sempras' Tennis style (from Sega Genesis)
-    for (i=0;i<=7;i++)
+    for (i=0; i<=7; i++)
     {
         if (Words[i]!=0)
         {
@@ -288,7 +294,6 @@ void HUD()
     }
 
     //If powerups enabled
-    //Opts[2]=PTRUE;
     if (Opts[2]==PTRUE)
     {
         //Determine who is using a powerup
@@ -321,7 +326,6 @@ void HUD()
         y=1;
 
         //If powerups on
-        //Opts[2]=PTRUE;
         if (Opts[2]==PTRUE)
         {
             //Set Saved powerup
@@ -339,7 +343,7 @@ void HUD()
         //Ditto for other side, just different coordinates
         x=38;
         y=1;
-        //Opts[2]=PTRUE;
+
         if (Opts[2]==PTRUE)
         {
             SPR_setPosition(&GameSprites[SOff_spower],296,24);
@@ -364,7 +368,7 @@ void HUD()
     {
         x=38;
         y=1;
-        //Opts[2]=PTRUE;
+
         if (Opts[2]==PTRUE)
         {
             SPR_setPosition(&GameSprites[SOff_spower+1],296,24);
@@ -381,7 +385,6 @@ void HUD()
         y=1;
 
         //If powerups on
-        //Opts[2]=PTRUE;
         if (Opts[2]==PTRUE)
         {
             //Set Saved powerup
@@ -433,20 +436,27 @@ void Paused()
 
     //Draw pause text
     //            1234567890123456789012345678901234567
-    VDP_drawText("+-----------------------------------+",x,y);y++;
-    VDP_drawText("|#===# #===# #   # #==== #==== ====\\|",x,y);y++;
-    VDP_drawText("|#   # #   # #   # #     #     #   #|",x,y);y++;
-    VDP_drawText("|#===+ #===# #   # #===# #==== #   #|",x,y);y++;
-    VDP_drawText("|#     #   # #   #     # #     #   #|",x,y);y++;
-    VDP_drawText("|#     #   # #===# ====# #==== ====/|",x,y);y++;
-    VDP_drawText("+--------Press START Button---------+",x,y);y++;
+    VDP_drawText("+-----------------------------------+",x,y);
+    y++;
+    VDP_drawText("|#===# #===# #   # #==== #==== ====\\|",x,y);
+    y++;
+    VDP_drawText("|#   # #   # #   # #     #     #   #|",x,y);
+    y++;
+    VDP_drawText("|#===+ #===# #   # #===# #==== #   #|",x,y);
+    y++;
+    VDP_drawText("|#     #   # #   #     # #     #   #|",x,y);
+    y++;
+    VDP_drawText("|#     #   # #===# ====# #==== ====/|",x,y);
+    y++;
+    VDP_drawText("+--------Press START Button---------+",x,y);
+    y++;
 
     //@Everything below crashes. Why?
     JOY_setEventHandler(BtnPaused);
     while (isPaused==PTRUE)
     {
 
-        for (i=1;i<=7;i++)
+        for (i=1; i<=7; i++)
         {
             VDP_setPaletteColor(ind,pal[i]);
             waitMs(1000);
@@ -474,9 +484,9 @@ void BtnPaused(u16 joy, u16 changed, u16 state)
         //@NEW to retro version! Place all multiple pucks in a line
         if ((Player[0].aPwr==Pwr_MPuck) || (Player[1].aPwr==Pwr_MPuck))
         {
-            for (i=1;i<=(Max_Pucks-1);i++)
+            for (i=1; i<=(Max_Pucks-1); i++)
             {
-                    SPR_setPosition(&GameSprites[SOff_pucks+i],148, 100);
+                SPR_setPosition(&GameSprites[SOff_pucks+i],148, 100);
             }
         }
     }

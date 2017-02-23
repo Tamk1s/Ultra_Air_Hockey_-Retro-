@@ -1,5 +1,5 @@
 //Contains Echo variables and global variable stuffs
-#include <Genesis.h>
+#include <genesis.h>
 #include "echo.h"
 #include <maths.h>
 #include "../res/Echo/data/Musres.h"
@@ -131,7 +131,7 @@ static u32 const Songs_Len[]=
 #define NTRUE -1    //Negative True
 #define PTRUE 1     //Positive True
 #define _FALSE 0    //False
-#define DBUG 0      //Debug flag
+#define DBUG 1      //Debug flag
 
 //Options
 static u8 Opts[]=
